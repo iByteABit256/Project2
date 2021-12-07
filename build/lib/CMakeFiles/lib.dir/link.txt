@@ -1,2 +1,0 @@
-/usr/bin/ar qc liblib.a CMakeFiles/lib.dir/assignment.cpp.o CMakeFiles/lib.dir/cluster.cpp.o CMakeFiles/lib.dir/hash.cpp.o CMakeFiles/lib.dir/hashtable.cpp.o CMakeFiles/lib.dir/HyperImpl.cpp.o CMakeFiles/lib.dir/kmeans.cpp.o CMakeFiles/lib.dir/LSHimpl.cpp.o CMakeFiles/lib.dir/maths.cpp.o CMakeFiles/lib.dir/parser.cpp.o CMakeFiles/lib.dir/point.cpp.o
-/usr/bin/ranlib liblib.a
