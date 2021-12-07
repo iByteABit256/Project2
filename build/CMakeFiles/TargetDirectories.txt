@@ -1,0 +1,10 @@
+/home/pauls/Documents/Project2/build/CMakeFiles/edit_cache.dir
+/home/pauls/Documents/Project2/build/CMakeFiles/rebuild_cache.dir
+/home/pauls/Documents/Project2/build/src/CMakeFiles/lsh.dir
+/home/pauls/Documents/Project2/build/src/CMakeFiles/hyper.dir
+/home/pauls/Documents/Project2/build/src/CMakeFiles/cluster.dir
+/home/pauls/Documents/Project2/build/src/CMakeFiles/edit_cache.dir
+/home/pauls/Documents/Project2/build/src/CMakeFiles/rebuild_cache.dir
+/home/pauls/Documents/Project2/build/lib/CMakeFiles/lib.dir
+/home/pauls/Documents/Project2/build/lib/CMakeFiles/edit_cache.dir
+/home/pauls/Documents/Project2/build/lib/CMakeFiles/rebuild_cache.dir
