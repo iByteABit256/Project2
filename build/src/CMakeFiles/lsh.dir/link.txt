@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/lsh.dir/LSH.cpp.o -o lsh  ../lib/liblib.a 
+/usr/bin/c++ -g CMakeFiles/lsh.dir/LSH.cpp.o -o lsh  ../lib/liblib.a 
