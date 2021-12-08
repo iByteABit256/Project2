@@ -20,6 +20,10 @@ int Hash::h(Point &p){
     return floor((dot(p.pos,v)+t)/w);
 }
 
+
+HashHandler::HashHandler(){
+}
+
 HashHandler::HashHandler(vector<Hash> hashes){
     this->hashes = hashes;
 }

@@ -24,6 +24,7 @@ class HashHandler{
 public:
     vector<Hash> hashes;
     
+    HashHandler();
     HashHandler(vector<Hash> hashes);
     int g(Point &p, vector<int> r, vector<int> h, int tableSize);
     uint32_t f_h(Point &p, vector<unordered_map<int, char>> &f);

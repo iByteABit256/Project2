@@ -12,12 +12,7 @@ FetchContent_Declare(
 
 enable_testing()
 
-add_executable(my_test my_test.cpp)
-
-target_link_libraries(my_test gtest_main)
-
 include(GoogleTest)
-gtest_discover_tests(my_test)
 
 FetchContent_MakeAvailable(googletest)
 
