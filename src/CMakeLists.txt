@@ -1,7 +1,7 @@
 add_executable(lsh LSH_driver.cpp)
 target_link_libraries(lsh lib)
 
-add_executable(hyper hypercube.cpp)
+add_executable(hyper Hypercube_driver.cpp)
 target_link_libraries(hyper lib)
 
 add_executable(cluster Clustering.cpp)

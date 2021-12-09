@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "../lib/LSH.h"
+#include "../lib/Hypercube.h"
 #include "../lib/parser.h"
 
 using namespace std;
@@ -120,9 +121,10 @@ int main(int argc, char *argv[]){
     if(algorithm == "LSH"){
         struct LSH_Info info = LSH_Initialize(points, L, k, d);
         res = LSH_KNN(points, querypoints, info, 1);
-    }/*else if(algorithm == "Hypercube"){
-        res = Hypercube_KNN();
-    }else if(algorithm == "Frechet"){
+    }else if(algorithm == "Hypercube"){
+        struct Hypercube_Info info = Hypercube_Initialize(points, k, d, probes, M);
+        res = Hypercube_KNN(points, querypoints, info, 1);
+    }/*else if(algorithm == "Frechet"){
         res = Frechet_KNN();
     }*/
     
