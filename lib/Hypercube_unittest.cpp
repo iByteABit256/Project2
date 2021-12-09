@@ -3,7 +3,7 @@
 #include "Hypercube.h"
 
 
-TEST(LSH, Initialization) {
+TEST(Hypercube, Initialization) {
     vector<float> v{1,2,3};
     Point a(v);
     Point b(v);
@@ -21,7 +21,7 @@ TEST(LSH, Initialization) {
     EXPECT_GT(info.hashtable.size(), 0);
 }
 
-TEST(LSH, KNN) {
+TEST(Hypercube, KNN) {
     vector<float> v{1,2,3};
     Point a(v);
     Point b(v);
