@@ -12,7 +12,7 @@
 
 using namespace std;
 
-vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector<int> gindices, int k,distance type){
+vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector<int> gindices, int k, distance_type type){
 	vector<tuple<float,Point *>> nearestneighbors;
 	vector<tuple<float,Point *>>::iterator it;
 

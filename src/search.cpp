@@ -125,6 +125,7 @@ int main(int argc, char *argv[]){
         struct Hypercube_Info info = Hypercube_Initialize(points, k, d, probes, M);
         res = Hypercube_KNN(points, querypoints, info, 1,EUCLIDIAN);
     }else if(algorithm == "Frechet"){
+        struct LSH_Info info = LSH_Initialize(points, L, k, d);
         res = LSH_KNN(points, querypoints, info, 1,FRECHETE);
     }
 
@@ -135,7 +136,11 @@ int main(int argc, char *argv[]){
 		// Output
 		ss << "Query: " << querypoints[i]->ID << endl; 
         ss << "Nearest neighbor: " << res[i][0]->ID << endl;
-		ss << "distanceLSH: " << querypoints[i]->distance(*res[i][0],EUCLIDIAN) << endl;
+		if(algorithm == "Frechet"){
+            ss << "distanceLSH: " << querypoints[i]->distance(*res[i][0],FRECHETE) << endl;
+        }else{
+            ss << "distanceLSH: " << querypoints[i]->distance(*res[i][0],EUCLIDIAN) << endl;
+        }
     }
 
 	ofstream output;

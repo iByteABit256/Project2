@@ -143,7 +143,7 @@ int main(int argc, char *argv[]){
 
 		// kNN
 		auto knn_start = chrono::high_resolution_clock::now();
-		vector<Point *> knn = kNN(&q,hashtables,gindices,N);
+		vector<Point *> knn = kNN(&q,hashtables,gindices,N,EUCLIDIAN);
 		auto knn_stop = chrono::high_resolution_clock::now();
 		auto knn_duration = chrono::duration_cast<chrono::milliseconds>(knn_stop - knn_start);
 
