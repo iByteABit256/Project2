@@ -30,6 +30,7 @@ string Point::to_str(){
     return ss.str();
 }
 
+// Euclidean distance
 float euclidean(Point a, Point p){
     if(a.d != p.pos.size()){
         throw runtime_error("Distance between points of different dimensions");
@@ -45,6 +46,7 @@ float euclidean(Point a, Point p){
 
 }
 
+// Discrete frechete distance
 float frechete_discrete(Point a, Point b){
     vector<vector<float>> c(a.d, vector<float>(b.d));
 
@@ -66,7 +68,7 @@ float frechete_discrete(Point a, Point b){
     return c[a.d-1][b.d-1];
 }
 
-// Euclidean distance
+// Distance from another point
 float Point::distance(Point p, distance_type type){
     
     if(type==EUCLIDIAN){
