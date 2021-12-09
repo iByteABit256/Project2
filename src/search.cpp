@@ -133,7 +133,7 @@ int main(int argc, char *argv[]){
 
     for(int i = 0; i < res.size(); i++){
 		// Output
-		ss << "Query: " << endl; 
+		ss << "Query: " << querypoints[i]->ID << endl; 
         ss << "Nearest neighbor: " << res[i][0]->ID << endl;
 		ss << "distanceLSH: " << querypoints[i]->distance(*res[i][0],EUCLIDIAN) << endl;
     }

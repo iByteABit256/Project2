@@ -15,7 +15,7 @@ vector<Point *> parseinputfile(string inputfile,int &d,int &n){
 	fstream input;
 
 	// Tab seperated dimensions (?)
-	string delimiter = " ";
+	string delimiter = "\t";
 
 	input.open(inputfile);
 	if(!input){

@@ -13,7 +13,7 @@ const int M = INT_MAX-5;
 
 Hash::Hash(vector<float> v, float t){
     this->v = v;
-    this-> t = t;
+    this->t = t;
 }
 
 int Hash::h(Point &p){
