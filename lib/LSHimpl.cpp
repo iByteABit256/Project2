@@ -12,7 +12,7 @@
 
 using namespace std;
 
-vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector<int> gindices, int k){
+vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector<int> gindices, int k,distance type){
 	vector<tuple<float,Point *>> nearestneighbors;
 	vector<tuple<float,Point *>>::iterator it;
 
@@ -32,7 +32,7 @@ vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector
 
 			// Ignore if LSH ID is different
 			if(q->LSH_ID[i] == p->LSH_ID[i]){
-				nearestneighbors.push_back(make_tuple(q->distance(*p),p));
+				nearestneighbors.push_back(make_tuple(q->distance(*p,type),p));
 			}
 
 			// Stop if results too large 

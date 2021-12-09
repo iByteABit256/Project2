@@ -31,16 +31,54 @@ string Point::to_str(){
 }
 
 // Euclidean distance
-float Point::distance(Point p){
-    if(this->d != p.pos.size()){
+float Point::distance(Point p,distance type){
+    
+
+    if(type==EUCLIDIAN){
+        return euclidiandistance(*this,p);
+    }else if(type==FRECHETE){
+        return frechete_discrete(*this,p);
+    }
+
+
+    
+}
+
+
+
+float euclidiandistance(Point a,Point p){
+    if(a.d != p.pos.size()){
         throw runtime_error("Distance between points of different dimensions");
     }
     
     float sum = 0;
-    for(int i = 0; i < this->d; i++){
-        float dif = this->pos[i]-p.pos[i];
+    for(int i = 0; i < a.d; i++){
+        float dif = a.pos[i]-p.pos[i];
         sum += dif*dif;
     }
     
     return sqrt(sum);
+
+}
+
+
+float frechete_discrete(Point a, Point b){
+    vector<vector<float>> c(a.d b.d);
+
+    for(int i = 0; i < a.d; i++){
+        for(int j = 0; j < b.d; j++){
+            float ecl = euclidean(a.pos[i], b.pos[j]);
+            if(i == 0 && j == 0){
+                c[i][j] = ecl;
+            }else if(i == 0){
+                c[i][j] = max(c[i][j-1], ecl);
+            }else if(j == 0){
+                c[i][j] = max(c[i-1][j], ecl);
+            }else{
+                c[i][j] = max(min(c[i-1][j], min(c[i][j-1], c[i-1][j-1])), ecl);
+            }
+        }
+    }
+
+    return c[a.d-1][b.d-1];
 }

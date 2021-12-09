@@ -55,7 +55,8 @@ struct Hypercube_Info Hypercube_Initialize(vector<Point *> points, int k, int d,
     return info;
 }
 
-vector<vector<Point *>> Hypercube_KNN(vector<Point *> points, vector<Point *> querypoints, struct Hypercube_Info info, int N){
+
+vector<vector<Point *>> Hypercube_KNN(vector<Point *> points, vector<Point *> querypoints, struct Hypercube_Info info, int N, distance type){
     
     vector<vector<Point *>> res;
 	unordered_map<uint32_t, vector<uint32_t>> neighbours;
@@ -69,8 +70,8 @@ vector<vector<Point *>> Hypercube_KNN(vector<Point *> points, vector<Point *> qu
 		int ind = hashQuery(&q,info.f,info.handler);
 
 		// kNN
-		res.push_back(hypercubekNN(&q,ind,neighbours,info.hashtable,N,info.probes,info.M));
-	}
+		res.push_back(hypercubekNN(&q,ind,neighbours,info.hashtable,N,info.probes,info.M,type));
+
 
     return res;
 }

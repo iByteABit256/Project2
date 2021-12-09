@@ -63,7 +63,9 @@ struct LSH_Info LSH_Initialize(vector<Point *> points, int L, int k, int d){
     return info;
 }
 
-vector<vector<Point *>> LSH_KNN(vector<Point *> points, vector<Point *> querypoints, struct LSH_Info info, int N){
+
+vector<vector<Point *>> LSH_KNN(vector<Point *> points, vector<Point *> querypoints, struct LSH_Info info, int N, distance type){
+
     
     vector<vector<Point *>> res;
 
@@ -76,7 +78,8 @@ vector<vector<Point *>> LSH_KNN(vector<Point *> points, vector<Point *> querypoi
 		vector<int> gindices = hashQuery(&q,info.r,info.h,info.handler,info.tableSize);
 
 		// kNN
-		res.push_back(kNN(&q,info.hashtables,gindices,N));
+		res.push_back(kNN(&q,info.hashtables,gindices,N,type));
+
 	}
     
     return res;

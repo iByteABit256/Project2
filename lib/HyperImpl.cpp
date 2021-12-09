@@ -15,7 +15,7 @@
 
 using namespace std;
 
-vector<Point*> hypercubekNN(Point* q, uint32_t qbitstring, unordered_map<uint32_t, vector<uint32_t>> &neighbours, vector<vector<Point*>> hashtable, int k, int probedist, int M){
+vector<Point*> hypercubekNN(Point* q, uint32_t qbitstring, unordered_map<uint32_t, vector<uint32_t>> &neighbours, vector<vector<Point*>> hashtable, int k, int probedist, int M, distance type){
 	unordered_map<uint32_t, vector<uint32_t>>::iterator help;
 	vector<tuple<float,Point *>> nearestneighbors;
 	vector<tuple<float,Point *>>::iterator it;
@@ -42,7 +42,7 @@ vector<Point*> hypercubekNN(Point* q, uint32_t qbitstring, unordered_map<uint32_
 	for(neighbour=(help->second).begin();neighbour!=(help->second).end();neighbour++){
 		vector<Point*> points = hashtable[(*neighbour)];
 		for(point=points.begin();point!=points.end();point++){
-			nearestneighbors.push_back(make_tuple(q->distance(**point),*point));
+			nearestneighbors.push_back(make_tuple(q->distance(**point,type),*point));
 		}
 		// Stop if results too large 
 		if(nearestneighbors.size() > M){

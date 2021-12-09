@@ -5,6 +5,9 @@
 
 using namespace std;
 
+
+enum distance{ EUCLIDIAN, FRECHETE };
+
 class Point{
 public:
     string ID;
@@ -17,7 +20,15 @@ public:
     Point();
     Point(vector<float> pos, string ID = "None");
     string to_str();
-    float distance(Point p);
+    float distance(Point p, distance type);
 };
 
+
+
+
+float euclidiandistance(Point a, Point p);
+float frechete_discrete(Point a, Point b);
+
 #endif
+
+
