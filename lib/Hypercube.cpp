@@ -56,13 +56,16 @@ struct Hypercube_Info Hypercube_Initialize(vector<Point *> points, int k, int d,
 }
 
 
-vector<vector<Point *>> Hypercube_KNN(vector<Point *> points, vector<Point *> querypoints, struct Hypercube_Info info, int N, distance_type type){
+vector<vector<Point *>> Hypercube_KNN(vector<Point *> points, vector<Point *> querypoints, struct Hypercube_Info info, \
+int N, float &average_duration, distance_type type){
     
     vector<vector<Point *>> res;
 	unordered_map<uint32_t, vector<uint32_t>> neighbours;
+	average_duration = 0;
 
 	// Run algorithm for every query
 	for(vector<Point *>::iterator queries = querypoints.begin(); queries != querypoints.end(); queries++){
+		auto knn_start = chrono::high_resolution_clock::now();
 
 		Point q = **queries;
 
@@ -71,7 +74,11 @@ vector<vector<Point *>> Hypercube_KNN(vector<Point *> points, vector<Point *> qu
 
 		// kNN
 		res.push_back(hypercubekNN(&q,ind,neighbours,info.hashtable,N,info.probes,info.M,type));
-    }
+		auto knn_stop = chrono::high_resolution_clock::now();
+		auto knn_duration = chrono::duration_cast<chrono::milliseconds>(knn_stop - knn_start);
+		average_duration += knn_duration;
+	}
+	average_duration /= (float)querypoints.size();
 
     return res;
 }

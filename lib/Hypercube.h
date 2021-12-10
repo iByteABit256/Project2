@@ -13,5 +13,6 @@ struct Hypercube_Info{
 };
 
 struct Hypercube_Info Hypercube_Initialize(vector<Point *> points, int k, int d, int probes, int M);
-vector<vector<Point *>> Hypercube_KNN(vector<Point *> points, vector<Point *> querypoints, struct Hypercube_Info info, int N, distance_type type);
+vector<vector<Point *>> Hypercube_KNN(vector<Point *> points, vector<Point *> querypoints, \
+struct Hypercube_Info info, int N, float &average_duration, distance_type type);
 

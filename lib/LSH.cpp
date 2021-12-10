@@ -64,13 +64,16 @@ struct LSH_Info LSH_Initialize(vector<Point *> points, int L, int k, int d){
 }
 
 
-vector<vector<Point *>> LSH_KNN(vector<Point *> points, vector<Point *> querypoints, struct LSH_Info info, int N, distance_type type){
+vector<vector<Point *>> LSH_KNN(vector<Point *> points, vector<Point *> querypoints, struct LSH_Info info, \
+int N, float &average_duration, distance_type type){
 
-    
     vector<vector<Point *>> res;
+	average_duration = 0;
 
 	// Run algorithm for every query
 	for(vector<Point *>::iterator queries = querypoints.begin(); queries != querypoints.end(); queries++){
+
+		auto knn_start = chrono::high_resolution_clock::now();
 
 		Point q = **queries;
 
@@ -80,7 +83,11 @@ vector<vector<Point *>> LSH_KNN(vector<Point *> points, vector<Point *> querypoi
 		// kNN
 		res.push_back(kNN(&q,info.hashtables,gindices,N,type));
 
+		auto knn_stop = chrono::high_resolution_clock::now();
+		auto knn_duration = chrono::duration_cast<chrono::milliseconds>(knn_stop - knn_start);
+		average_duration += knn_duration;
 	}
+	average_duration /= (float)querypoints.size();
     
     return res;
 }
