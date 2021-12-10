@@ -37,7 +37,7 @@ TEST(Hypercube, KNN) {
     int M = 10;
     struct Hypercube_Info info = Hypercube_Initialize(points, k, d, probes, M);
 
-    vector<vector<Point *>> res = Hypercube_KNN(points, queries, info, 1, EUCLIDIAN);
+    vector<vector<Point *>> res = Hypercube_KNN(points, queries, info, 1, EUCLIDEAN);
     
     EXPECT_EQ(1, res.size());
     EXPECT_EQ(1, res[0].size());

@@ -71,9 +71,9 @@ float frechete_discrete(Point a, Point b){
 // Distance from another point
 float Point::distance(Point p, distance_type type){
     
-    if(type==EUCLIDIAN){
+    if(type==EUCLIDEAN){
         return euclidean(*this,p);
-    }else if(type==FRECHETE){
+    }else if(type==FRECHET){
         return frechete_discrete(*this,p);
     }
 }

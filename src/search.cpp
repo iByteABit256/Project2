@@ -120,13 +120,13 @@ int main(int argc, char *argv[]){
     vector<vector<Point *>> res;
     if(algorithm == "LSH"){
         struct LSH_Info info = LSH_Initialize(points, L, k, d);
-        res = LSH_KNN(points, querypoints, info, 1,EUCLIDIAN);
+        res = LSH_KNN(points, querypoints, info, 1,EUCLIDEAN);
     }else if(algorithm == "Hypercube"){
         struct Hypercube_Info info = Hypercube_Initialize(points, k, d, probes, M);
-        res = Hypercube_KNN(points, querypoints, info, 1,EUCLIDIAN);
+        res = Hypercube_KNN(points, querypoints, info, 1,EUCLIDEAN);
     }else if(algorithm == "Frechet"){
         struct LSH_Info info = LSH_Initialize(points, L, k, d);
-        res = LSH_KNN(points, querypoints, info, 1,FRECHETE);
+        res = LSH_KNN(points, querypoints, info, 1,FRECHET);
     }
 
     
@@ -137,9 +137,9 @@ int main(int argc, char *argv[]){
 		ss << "Query: " << querypoints[i]->ID << endl; 
         ss << "Nearest neighbor: " << res[i][0]->ID << endl;
 		if(algorithm == "Frechet"){
-            ss << "distanceLSH: " << querypoints[i]->distance(*res[i][0],FRECHETE) << endl;
+            ss << "distanceLSH: " << querypoints[i]->distance(*res[i][0],FRECHET) << endl;
         }else{
-            ss << "distanceLSH: " << querypoints[i]->distance(*res[i][0],EUCLIDIAN) << endl;
+            ss << "distanceLSH: " << querypoints[i]->distance(*res[i][0],EUCLIDEAN) << endl;
         }
     }
 

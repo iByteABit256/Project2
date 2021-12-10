@@ -3,7 +3,7 @@
 #include "LSH.h"
 
 
-TEST(DiscreteFrechete, Initialization) {
+TEST(DiscreteFrechet, Initialization) {
     vector<float> v{1,2,3};
     Point a(v);
     Point b(v);
@@ -22,7 +22,7 @@ TEST(DiscreteFrechete, Initialization) {
     EXPECT_GT(info.tableSize, 0);
 }
 
-TEST(DiscreteFrechete, KNN) {
+TEST(DiscreteFrechet, KNN) {
     vector<float> v{1,2,3};
     Point a(v);
     Point b(v);
@@ -37,7 +37,7 @@ TEST(DiscreteFrechete, KNN) {
     int d = 3;
     struct LSH_Info info = LSH_Initialize(points, L, k, d);
 
-    vector<vector<Point *>> res = LSH_KNN(points, queries, info, 1, FRECHETE);
+    vector<vector<Point *>> res = LSH_KNN(points, queries, info, 1, FRECHET);
     
     EXPECT_EQ(1, res.size());
     EXPECT_EQ(1, res[0].size());

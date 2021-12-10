@@ -6,7 +6,7 @@
 using namespace std;
 
 
-enum distance_type{ EUCLIDIAN, FRECHETE };
+enum distance_type{ EUCLIDEAN, FRECHET };
 
 class Point{
 public:
@@ -20,7 +20,7 @@ public:
     Point();
     Point(vector<float> pos, string ID = "None");
     string to_str();
-    float distance(Point p, distance_type type = EUCLIDIAN);
+    float distance(Point p, distance_type type = EUCLIDEAN);
 };
 
 #endif

@@ -51,7 +51,7 @@ void classicassignment(vector<Point*> points,vector<Cluster*> &clusters){
 	for(int i = 0; i < n; i++){
 		float min = numeric_limits<float>::max();
 		for(int j = 0; j < clusters.size(); j++){
-			if((dist = points[i]->distance(*(clusters[j]->centroid), EUCLIDIAN)) < min){
+			if((dist = points[i]->distance(*(clusters[j]->centroid), EUCLIDEAN)) < min){
 				min = dist;
 				closestcluster = clusters[j];
 			}

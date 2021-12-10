@@ -37,7 +37,7 @@ TEST(LSH, KNN) {
     int d = 3;
     struct LSH_Info info = LSH_Initialize(points, L, k, d);
 
-    vector<vector<Point *>> res = LSH_KNN(points, queries, info, 1, EUCLIDIAN);
+    vector<vector<Point *>> res = LSH_KNN(points, queries, info, 1, EUCLIDEAN);
     
     EXPECT_EQ(1, res.size());
     EXPECT_EQ(1, res[0].size());
