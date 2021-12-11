@@ -85,7 +85,8 @@ int N, float &average_duration, distance_type type){
 
 		auto knn_stop = chrono::high_resolution_clock::now();
 		auto knn_duration = chrono::duration_cast<chrono::milliseconds>(knn_stop - knn_start);
-		average_duration += knn_duration;
+		average_duration += knn_duration.count();
+		knn_duration;
 	}
 	average_duration /= (float)querypoints.size();
     

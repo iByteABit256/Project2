@@ -37,8 +37,10 @@ TEST(LSH, KNN) {
     int d = 3;
     struct LSH_Info info = LSH_Initialize(points, L, k, d);
 
-    vector<vector<Point *>> res = LSH_KNN(points, queries, info, 1, EUCLIDEAN);
+    float average_duration;
+    vector<vector<Point *>> res = LSH_KNN(points, queries, info, 1, average_duration, EUCLIDEAN);
     
     EXPECT_EQ(1, res.size());
     EXPECT_EQ(1, res[0].size());
+    EXPECT_GE(average_duration, 0);
 }

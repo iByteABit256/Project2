@@ -37,8 +37,10 @@ TEST(Hypercube, KNN) {
     int M = 10;
     struct Hypercube_Info info = Hypercube_Initialize(points, k, d, probes, M);
 
-    vector<vector<Point *>> res = Hypercube_KNN(points, queries, info, 1, EUCLIDEAN);
+    float average_duration;
+    vector<vector<Point *>> res = Hypercube_KNN(points, queries, info, 1, average_duration, EUCLIDEAN);
     
     EXPECT_EQ(1, res.size());
     EXPECT_EQ(1, res[0].size());
+    EXPECT_GE(average_duration, 0);
 }

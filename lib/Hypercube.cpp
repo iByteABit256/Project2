@@ -76,7 +76,7 @@ int N, float &average_duration, distance_type type){
 		res.push_back(hypercubekNN(&q,ind,neighbours,info.hashtable,N,info.probes,info.M,type));
 		auto knn_stop = chrono::high_resolution_clock::now();
 		auto knn_duration = chrono::duration_cast<chrono::milliseconds>(knn_stop - knn_start);
-		average_duration += knn_duration;
+		average_duration += knn_duration.count();
 	}
 	average_duration /= (float)querypoints.size();
 

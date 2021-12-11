@@ -148,6 +148,7 @@ int main(int argc, char *argv[]){
         ss << "distanceApproximate: " << querypoints[i]->distance(*res[i][0], dist) << endl;
         ss << "distanceTrue: " << querypoints[i]->distance(*true_res[i][0], dist) << endl;
     }
+    ss << endl;
     ss << "tApproximateAverage: " << average_duration << " ms" << endl;
     ss << "tTrueAverage: " << brute_average_duration << " ms" << endl;
 

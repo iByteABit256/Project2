@@ -94,7 +94,7 @@ vector<Point *> rangeSearch(Point *q, vector<vector<vector<Point *>>> ghashtable
 	return neighborsinrange;
 }
 
-vector<Point *> bruteKNN(Point *q, vector<Point *> points, int k){
+vector<Point *> bruteKNN(Point *q, vector<Point *> points, int k, distance_type type){
 	vector<tuple<float,Point *>> nearestneighbors;
 	vector<tuple<float,Point *>>::iterator it;
 
@@ -107,7 +107,7 @@ vector<Point *> bruteKNN(Point *q, vector<Point *> points, int k){
     for(p_it = points.begin(); p_it != points.end(); p_it++){
         Point *p = *p_it;
 
-        nearestneighbors.push_back(make_tuple(q->distance(*p),p));
+        nearestneighbors.push_back(make_tuple(q->distance(*p, type),p));
     }
 
 	// Sort by distance

@@ -25,11 +25,11 @@ vector<vector<Point *>> Brute_KNN(vector<Point *> points, vector<Point *> queryp
 		Point q = **queries;
 
 		// kNN
-		res.push_back(brutekNN(&q,points,N,type));
+		res.push_back(bruteKNN(&q,points,N,type));
 
 		auto knn_stop = chrono::high_resolution_clock::now();
 		auto knn_duration = chrono::duration_cast<chrono::milliseconds>(knn_stop - knn_start);
-		average_duration += knn_duration;
+		average_duration += knn_duration.count();
 	}
 	average_duration /= (float)querypoints.size();
     
