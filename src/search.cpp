@@ -8,6 +8,7 @@
 
 #include "../lib/LSH.h"
 #include "../lib/Hypercube.h"
+#include "../lib/Brute.h"
 #include "../lib/parser.h"
 
 using namespace std;
@@ -119,6 +120,7 @@ int main(int argc, char *argv[]){
     
     vector<vector<Point *>> res;
     float average_duration;
+    distance_type dist = EUCLIDEAN;
 
     if(algorithm == "LSH"){
         struct LSH_Info info = LSH_Initialize(points, L, k, d);
@@ -129,8 +131,11 @@ int main(int argc, char *argv[]){
     }else if(algorithm == "Frechet"){
         struct LSH_Info info = LSH_Initialize(points, L, k, d);
         res = LSH_KNN(points, querypoints, info, 1, average_duration, FRECHET);
+        dist = FRECHET;
     }
 
+    float brute_average_duration;
+    vector<vector<Point *>> true_res = Brute_KNN(points, querypoints, 1, brute_average_duration, dist);
     
 	ostringstream ss; // Intermediary output buffer
 
@@ -139,13 +144,12 @@ int main(int argc, char *argv[]){
 		ss << "Query: " << querypoints[i]->ID << endl; 
         ss << "Algorithm: " << algorithm << endl;
         ss << "Approximate Nearest neighbor: " << res[i][0]->ID << endl;
-		if(algorithm == "Frechet"){
-            ss << "distanceApproximate: " << querypoints[i]->distance(*res[i][0],FRECHET) << endl;
-        }else{
-            ss << "distanceApproximate: " << querypoints[i]->distance(*res[i][0],EUCLIDEAN) << endl;
-        }
+        ss << "True Nearest neighbor: " << true_res[i][0]->ID << endl;
+        ss << "distanceApproximate: " << querypoints[i]->distance(*res[i][0], dist) << endl;
+        ss << "distanceTrue: " << querypoints[i]->distance(*true_res[i][0], dist) << endl;
     }
     ss << "tApproximateAverage: " << average_duration << " ms" << endl;
+    ss << "tTrueAverage: " << brute_average_duration << " ms" << endl;
 
 	ofstream output;
 	output.open(outputfile);
