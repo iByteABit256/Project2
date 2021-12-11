@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <sstream>
+#include <limits>
 
 #include "../lib/LSH.h"
 #include "../lib/Hypercube.h"
@@ -138,19 +139,29 @@ int main(int argc, char *argv[]){
     vector<vector<Point *>> true_res = Brute_KNN(points, querypoints, 1, brute_average_duration, dist);
     
 	ostringstream ss; // Intermediary output buffer
+    float maf = -1; // Maximum approximation factor
 
     for(int i = 0; i < res.size(); i++){
 		// Output
+        float approx_dist = querypoints[i]->distance(*res[i][0], dist);
+        float true_dist = querypoints[i]->distance(*true_res[i][0], dist);
+        float approx_factor = approx_dist/(true_dist + numeric_limits<float>::min());
+        
+        if(approx_factor > maf){
+            maf = approx_factor;
+        }
+
 		ss << "Query: " << querypoints[i]->ID << endl; 
         ss << "Algorithm: " << algorithm << endl;
         ss << "Approximate Nearest neighbor: " << res[i][0]->ID << endl;
         ss << "True Nearest neighbor: " << true_res[i][0]->ID << endl;
-        ss << "distanceApproximate: " << querypoints[i]->distance(*res[i][0], dist) << endl;
-        ss << "distanceTrue: " << querypoints[i]->distance(*true_res[i][0], dist) << endl;
+        ss << "distanceApproximate: " << approx_dist << endl;
+        ss << "distanceTrue: " << true_dist << endl;
     }
     ss << endl;
     ss << "tApproximateAverage: " << average_duration << " ms" << endl;
     ss << "tTrueAverage: " << brute_average_duration << " ms" << endl;
+    ss << "MAF: " << maf << endl;
 
 	ofstream output;
 	output.open(outputfile);
