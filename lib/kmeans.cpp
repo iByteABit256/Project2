@@ -2,6 +2,7 @@
 #include <limits>
 #include <numeric>
 #include <algorithm>
+#include <random>
 
 #include "kmeans.h"
 
@@ -28,29 +29,31 @@ vector<float> D_sqr(vector<Point *> points, vector<Cluster *> clusters, int n, i
 vector<float> calculateProbabilities(vector<float> dist, int n){
     vector<float> prob(n);
     
-    float sum = accumulate(dist.begin(), dist.end(), 0);
+    float max = *max_element(dist.begin(), dist.end());
+    for(vector<float>::iterator d = dist.begin(); d != dist.end(); d++){
+        *d /= max;
+    }
 
     for(int i = 0; i < n; i++){
-        prob[i] = dist[i]/sum;
+        prob[i] = accumulate(dist.begin(), dist.begin()+i,0);
     }
     
     return prob;
 }
 
-// "Flip coin" for every point to become centroid
+// Choose new centroid based on probabilities
 int choose(vector<float> prob, int n){
-    int r = -1;
+    default_random_engine generator;
+    uniform_real_distribution<float> distribution(0.0,prob[n-1]);
 
-    while(r == -1){
-        for(int i = 0; i < n; i++){
-            if(rand()%100 >= prob[i]*100){
-                r = i;
-                break;
-            }
+    float x = distribution(generator);
+    for(int i = 0; i < n-1; i++){
+        if(prob[i] < x && prob[i+1] >= x){
+            return i;
         }
     }
-    
-    return r;
+
+    return n;
 }
 
 // K-Means++ implementation

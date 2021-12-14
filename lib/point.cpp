@@ -76,4 +76,6 @@ float Point::distance(Point p, distance_type type){
     }else if(type==FRECHET){
         return frechete_discrete(*this,p);
     }
+    
+    return -1;
 }
