@@ -12,7 +12,7 @@
 #include "LSHimpl.h"
 
 
-struct LSH_Info LSH_Initialize(vector<Point *> points, int L, int k, int d){
+struct LSH_Info LSH_Initialize(vector<Point *> points, int L, int k, int d,distance_type type){
     
     struct LSH_Info info;
 
@@ -58,13 +58,42 @@ struct LSH_Info LSH_Initialize(vector<Point *> points, int L, int k, int d){
 	}
 	
 	// Calculate L hashtables
-	info.hashtables = createHashtables(points,info.r,info.h,info.handler,info.tableSize);
+	info.hashtables = createHashtables(points,info.r,info.h,info.handler,info.tableSize,type);
     
     return info;
 }
 
 
 vector<vector<Point *>> LSH_KNN(vector<Point *> points, vector<Point *> querypoints, struct LSH_Info info, \
+int N, float &average_duration, distance_type type){
+
+    vector<vector<Point *>> res;
+	average_duration = 0;
+
+	// Run algorithm for every query
+	for(vector<Point *>::iterator queries = querypoints.begin(); queries != querypoints.end(); queries++){
+
+		auto knn_start = chrono::high_resolution_clock::now();
+
+		Point q = **queries;
+
+		// Calculate amplified hash for each hashtable
+		vector<int> gindices = hashQuery(&q,info.r,info.h,info.handler,info.tableSize);
+
+		// kNN
+		res.push_back(kNN(&q,info.hashtables,gindices,N,type));
+
+		auto knn_stop = chrono::high_resolution_clock::now();
+		auto knn_duration = chrono::duration_cast<chrono::milliseconds>(knn_stop - knn_start);
+		average_duration += knn_duration.count();
+	}
+	average_duration /= (float)querypoints.size();
+    
+    return res;
+}
+
+
+vector<vector<Point *>> LSH_Frechet_KNN( vector<Point *> querypoints, struct LSH_Info info, \
 int N, float &average_duration, distance_type type){
 
     vector<vector<Point *>> res;

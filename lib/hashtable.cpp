@@ -9,7 +9,7 @@
 
 const int bucketSizeFactor = 2; // Average bucket size
 
-vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, vector<vector<int>> r, vector<vector<int>> h, HashHandler handler, int &tableSize){
+vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, vector<vector<int>> r, vector<vector<int>> h, HashHandler handler, int &tableSize,distance_type type){
     int L = r.size(); // # amplified functions
     int n = points.size(); // # input points 
     int d = points[0]->d; // dimension of points

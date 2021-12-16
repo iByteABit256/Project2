@@ -54,7 +54,7 @@ float frechete_discrete(Point a, Point b){
     for(int i = 0; i < a.d-1; i+=2){
         for(int j = 0; j < b.d-1; j+=2){
             vector<float> coords_a = { a.pos[i], a.pos[i+1] };
-            vector<float> coords_b = { a.pos[i], a.pos[i+1] };
+            vector<float> coords_b = { b.pos[i], b.pos[i+1] };
             Point a_i(coords_a);
             Point b_j(coords_b);
             float ecl = a_i.distance(b_j);

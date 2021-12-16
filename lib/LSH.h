@@ -15,4 +15,6 @@ struct LSH_Info{
 struct LSH_Info LSH_Initialize(vector<Point *> points, int L, int k, int d);
 vector<vector<Point *>> LSH_KNN(vector<Point *> points, vector<Point *> querypoints, struct LSH_Info info, \
 int N , float &average_duration, distance_type type);
+vector<vector<Point *>> LSH_Frechet_KNN( vector<Point *> querypoints, struct LSH_Info info, \
+int N, float &average_duration, distance_type type);
 

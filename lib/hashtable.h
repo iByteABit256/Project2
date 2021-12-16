@@ -8,7 +8,7 @@
 #include "hash.h"
 #include "point.h"
 
-vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, vector<vector<int>> r, vector<vector<int>> h, HashHandler handler, int &tableSize);
+vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, vector<vector<int>> r, vector<vector<int>> h, HashHandler handler, int &tableSize,distance_type type = EUCLIDEAN);
 vector<vector<Point *>> createHashtable(vector<Point *> points, vector<unordered_map<int, char>> &f, HashHandler handler);
 vector<int> hashQuery(Point *q, vector<vector<int>> r, vector<vector<int>> h, HashHandler handler, int tableSize);
 int hashQuery(Point *q, vector<unordered_map<int, char>> &f, HashHandler handler);
