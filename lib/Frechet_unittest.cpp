@@ -13,7 +13,7 @@ TEST(DiscreteFrechet, Initialization) {
     int L = 6;
     int k = 3;
     int d = 3;
-    struct LSH_Info info = LSH_Initialize(points, L, k, d);
+    struct LSH_Info info = LSH_Initialize(points, L, k, 2*d, FRECHET, 0.69);
     
     EXPECT_EQ(L, info.r.size());
     EXPECT_EQ(L, info.h.size());
@@ -35,7 +35,7 @@ TEST(DiscreteFrechet, KNN) {
     int L = 6;
     int k = 3;
     int d = 3;
-    struct LSH_Info info = LSH_Initialize(points, L, k, d);
+    struct LSH_Info info = LSH_Initialize(points, L, k, 2*d, FRECHET, 0.69);
 
     float average_duration;
     vector<vector<Point *>> res = LSH_KNN(points, queries, info, 1, average_duration, FRECHET);
