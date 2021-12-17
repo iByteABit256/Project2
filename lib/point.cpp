@@ -43,7 +43,6 @@ float euclidean(Point a, Point p){
     }
     
     return sqrt(sum);
-
 }
 
 // Discrete frechete distance
@@ -53,11 +52,14 @@ float frechete_discrete(Point a, Point b){
     // Point vectors are curves where p = (x1,y1,x2,y2,...)
     for(int i = 0; i < a.d; i++){
         for(int j = 0; j < b.d; j++){
-            vector<float> coords_a = { (float)(i+1), a.pos[i] };
-            vector<float> coords_b = { (float)(j+1), b.pos[j] };
-            Point a_i(coords_a);
-            Point b_j(coords_b);
-            float euclidean_dist = a_i.distance(b_j);
+            float a_x = (float)(i+1);
+            float a_y = a.pos[i];
+            float b_x = (float)(j+1);
+            float b_y = a.pos[j];
+            float dx = a_x - a_y;
+            float dy = b_x - b_y;
+
+            float euclidean_dist = sqrt(dx*dx + dy*dy);
 
             if(i == 0 && j == 0){
                 c[i][j] = euclidean_dist;

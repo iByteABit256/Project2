@@ -25,16 +25,11 @@ vector<tuple<float,Point *>> findNearestNeighbors(Point *q,vector<vector<vector<
 
 		// For each element in bucket
 		for(int j = 0; j < ghashtable[g_i].size(); j++){
-
 			Point *p = ghashtable[g_i][j];
 
 			// Ignore if LSH ID is different
-			if(type == FRECHET){
+			if(type == FRECHET || empty || q->LSH_ID[i] == p->LSH_ID[i]){
 				nearestneighbors.push_back(make_tuple(q->distance(*p,type),p));
-			}else{
-				if(empty || q->LSH_ID[i] == p->LSH_ID[i]){
-					nearestneighbors.push_back(make_tuple(q->distance(*p,type),p));
-				}
 			}
 
 			// Stop if results too large 

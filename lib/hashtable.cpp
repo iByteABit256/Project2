@@ -37,8 +37,6 @@ Point *snapToGrid(Point *p, vector<vector<double>> grid_t, int L, double delta){
 vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, struct LSH_Info *info, distance_type type){
     int L = info->r.size(); // # amplified functions
     int n = points.size(); // # input points 
-    int d = points[0]->d; // dimension of points
-    int k = info->handler.hashes.size(); // # of h functions
     info->tableSize = n/bucketSizeFactor;
     
     vector<vector<vector<Point *>>> hashtables(L, vector<vector<Point *>>(info->tableSize));
@@ -47,7 +45,7 @@ vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, struct 
         default_random_engine generator;
         uniform_real_distribution<double> distribution(0.0,info->delta);
 
-        info->grid_t = vector<vector<double>>(2,vector<double>(L));
+        info->grid_t = vector<vector<double>>(2);
         for(int i = 0; i < 2; i ++){
             for(int j = 0; j < L; j++){
                 info->grid_t[i].push_back(distribution(generator));
@@ -63,6 +61,7 @@ vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, struct 
 
             if(type == FRECHET){
                 Point *snapped = snapToGrid(p, info->grid_t, j, info->delta);
+                // cerr << "snapped point: " << endl << snapped->to_str() << endl;
 
                 int g_j = info->handler.g(*snapped,info->r[j],info->h[j],info->tableSize);
                 hashtables[j][g_j].push_back(p);

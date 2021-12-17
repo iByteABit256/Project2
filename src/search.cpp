@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
     string metric;
 
 	int M = 10, probes = 2, L = 5, d = 0, n, k = 4;
-    double delta;
+    double delta = 0.69;
     bool continuous;
 	
 	vector<Point *> querypoints;
