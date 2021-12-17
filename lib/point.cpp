@@ -48,32 +48,30 @@ float euclidean(Point a, Point p){
 
 // Discrete frechete distance
 float frechete_discrete(Point a, Point b){
-    vector<vector<float>> c(a.d/2, vector<float>(b.d/2));
+    vector<vector<float>> c(a.d, vector<float>(b.d));
 
     // Point vectors are curves where p = (x1,y1,x2,y2,...)
-    for(int i = 0; i < a.d-1; i+=2){
-        for(int j = 0; j < b.d-1; j+=2){
-            vector<float> coords_a = { a.pos[i], a.pos[i+1] };
-            vector<float> coords_b = { b.pos[i], b.pos[i+1] };
+    for(int i = 0; i < a.d; i++){
+        for(int j = 0; j < b.d; j++){
+            vector<float> coords_a = { (float)(i+1), a.pos[i] };
+            vector<float> coords_b = { (float)(j+1), b.pos[j] };
             Point a_i(coords_a);
             Point b_j(coords_b);
-            float ecl = a_i.distance(b_j);
+            float euclidean_dist = a_i.distance(b_j);
 
-            int c_i = i/2;
-            int c_j = j/2;
-            if(c_i == 0 && c_j == 0){
-                c[c_i][c_j] = ecl;
-            }else if(c_i == 0){
-                c[c_i][c_j] = max(c[c_i][c_j-1], ecl);
-            }else if(c_j == 0){
-                c[c_i][c_j] = max(c[c_i-1][c_j], ecl);
+            if(i == 0 && j == 0){
+                c[i][j] = euclidean_dist;
+            }else if(i == 0){
+                c[i][j] = max(c[i][j-1], euclidean_dist);
+            }else if(j == 0){
+                c[i][j] = max(c[i-1][j], euclidean_dist);
             }else{
-                c[c_i][c_j] = max(min(c[c_i-1][c_j], min(c[c_i][c_j-1], c[c_i-1][c_j-1])), ecl);
+                c[i][j] = max(min(c[i-1][j], min(c[i][j-1], c[i-1][j-1])), euclidean_dist);
             }
         }
     }
 
-    return c[a.d/2-1][b.d/2-1];
+    return c[a.d-1][b.d-1];
 }
 
 // Distance from another point

@@ -11,6 +11,7 @@
 #include <sstream>
 #include <algorithm>
 
+#include "LSH.h"
 #include "LSHimpl.h"
 #include "HyperImpl.h"
 #include "parser.h"
@@ -112,9 +113,14 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 	
 	int tableSize;
 
-	
+	struct LSH_Info info;
+	info.r = r;
+	info.h = h;
+	info.handler = handler;
+	info.tableSize = tableSize;
+
 	// Calculate L hashtables
-	vector<vector<vector<Point *>>> hashtables = createHashtables(points,r,h,handler,tableSize);
+	vector<vector<vector<Point *>>> hashtables = createHashtables(points,&info);
 
 
 	vector<Cluster*>::iterator cluster;
@@ -159,7 +165,7 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 			currentclustersizes[j] = q->points.size();
 
 			// Calculate amplified hash for each hashtable
-			vector<int> gindices = hashQuery(q->centroid,r,h,handler,tableSize);
+			vector<int> gindices = hashQuery(q->centroid,info);
 
 			// Range Search
 			vector<Point *> neighborsinrange = rangeSearch(q->centroid,hashtables,gindices,radius);

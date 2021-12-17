@@ -123,6 +123,8 @@ int main(int argc, char *argv[]){
     float average_duration;
     distance_type dist = EUCLIDEAN;
 
+    srand(time(NULL));
+
     if(algorithm == "LSH"){
         struct LSH_Info info = LSH_Initialize(points, L, k, d);
         res = LSH_KNN(points, querypoints, info, 1, average_duration, EUCLIDEAN);
@@ -130,7 +132,7 @@ int main(int argc, char *argv[]){
         struct Hypercube_Info info = Hypercube_Initialize(points, k, d, probes, M);
         res = Hypercube_KNN(points, querypoints, info, 1, average_duration, EUCLIDEAN);
     }else if(algorithm == "Frechet"){
-        struct LSH_Info info = LSH_Initialize(points, L, k, d);
+        struct LSH_Info info = LSH_Initialize(points, L, k, 2*d, FRECHET, delta);
         res = LSH_KNN(points, querypoints, info, 1, average_duration, FRECHET);
         dist = FRECHET;
     }

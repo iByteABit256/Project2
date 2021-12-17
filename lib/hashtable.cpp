@@ -2,21 +2,58 @@
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
+#include <random>
 
+#include "LSH.h"
 #include "hashtable.h"
 #include "hash.h"
 #include "maths.h"
+#include "point.h"
 
 const int bucketSizeFactor = 2; // Average bucket size
 
-vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, vector<vector<int>> r, vector<vector<int>> h, HashHandler handler, int &tableSize,distance_type type){
-    int L = r.size(); // # amplified functions
+
+Point *snapToGrid(Point *p, vector<vector<double>> grid_t, int L, double delta){
+    vector<float> vec;
+    for(int i = 0; i < p->d; i++){
+        float x = (float)(i+1);
+        float y = p->pos[i];
+
+        float t_x = grid_t[0][L];
+        float t_y = grid_t[1][L];
+
+        // xi' = floor((xi-t)/δ + 1/2)*δ + t
+        float x_snapped = floor((x-t_x)/delta + 0.5)*delta+t_x;
+        float y_snapped = floor((y-t_y)/delta + 0.5)*delta+t_y;
+
+        vec.push_back(x_snapped);
+        vec.push_back(y_snapped);
+    }
+
+    Point *snapped_point = new Point(vec);
+    return snapped_point;
+}
+
+vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, struct LSH_Info *info, distance_type type){
+    int L = info->r.size(); // # amplified functions
     int n = points.size(); // # input points 
     int d = points[0]->d; // dimension of points
-    int k = handler.hashes.size(); // # of h functions
-    tableSize = n/bucketSizeFactor;
+    int k = info->handler.hashes.size(); // # of h functions
+    info->tableSize = n/bucketSizeFactor;
     
-    vector<vector<vector<Point *>>> hashtables(L, vector<vector<Point *>>(tableSize));
+    vector<vector<vector<Point *>>> hashtables(L, vector<vector<Point *>>(info->tableSize));
+
+    if(type == FRECHET){
+        default_random_engine generator;
+        uniform_real_distribution<double> distribution(0.0,info->delta);
+
+        info->grid_t = vector<vector<double>>(2,vector<double>(L));
+        for(int i = 0; i < 2; i ++){
+            for(int j = 0; j < L; j++){
+                info->grid_t[i].push_back(distribution(generator));
+            }
+        }
+    }
     
     // For each point
     for(int i = 0; i < n; i++){
@@ -24,10 +61,16 @@ vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, vector<
         Point *p = points[i];
         for(int j = 0; j < L; j++){
 
-            // Calculate g_j(p) and insert to j'th hashtable
-            int g_j = handler.g(*p,r[j],h[j],tableSize);
-            
-            hashtables[j][g_j].push_back(p);
+            if(type == FRECHET){
+                Point *snapped = snapToGrid(p, info->grid_t, j, info->delta);
+
+                int g_j = info->handler.g(*snapped,info->r[j],info->h[j],info->tableSize);
+                hashtables[j][g_j].push_back(p);
+            }else{
+                // Calculate g_j(p) and insert to j'th hashtable
+                int g_j = info->handler.g(*p,info->r[j],info->h[j],info->tableSize);
+                hashtables[j][g_j].push_back(p);
+            }
         }
     }
     
@@ -78,18 +121,23 @@ vector<uint32_t> findNeighbors(uint32_t id, int p, int n){
 }
 
 // Hash query with every amplified function g
-vector<int> hashQuery(Point *q, vector<vector<int>> r, vector<vector<int>> h, HashHandler handler, int tableSize){
-    int L = r.size(); // # amplified functions
+vector<int> hashQuery(Point *q, struct LSH_Info info, distance_type type){
+    int L = info.r.size(); // # amplified functions
     int d = q->d; // dimension of points
-    int k = handler.hashes.size(); // # of h functions
+    int k = info.handler.hashes.size(); // # of h functions
     
     vector<int> gindices;
     
     for(int i = 0; i < L; i++){
 
-        // Calculate g_i(p)
-        int g_i = handler.g(*q,r[i],h[i],tableSize);
+        int g_i;
 
+        if(type == FRECHET){
+            Point *snapped = snapToGrid(q, info.grid_t, i, info.delta);
+            g_i = info.handler.g(*snapped,info.r[i],info.h[i],info.tableSize);
+        }else{
+            g_i = info.handler.g(*q,info.r[i],info.h[i],info.tableSize);
+        }
         gindices.push_back(g_i);
     }
     

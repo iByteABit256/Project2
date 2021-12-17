@@ -31,8 +31,12 @@ vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector
 			Point *p = ghashtable[g_i][j];
 
 			// Ignore if LSH ID is different
-			if(q->LSH_ID[i] == p->LSH_ID[i]){
+			if(type == FRECHET){
 				nearestneighbors.push_back(make_tuple(q->distance(*p,type),p));
+			}else{
+				if(q->LSH_ID[i] == p->LSH_ID[i]){
+					nearestneighbors.push_back(make_tuple(q->distance(*p,type),p));
+				}
 			}
 
 			// Stop if results too large 

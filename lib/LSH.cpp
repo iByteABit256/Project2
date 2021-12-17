@@ -12,13 +12,14 @@
 #include "LSHimpl.h"
 
 
-struct LSH_Info LSH_Initialize(vector<Point *> points, int L, int k, int d,distance_type type){
+struct LSH_Info LSH_Initialize(vector<Point *> points, int L, int k, int d, distance_type type, double delta){
     
     struct LSH_Info info;
 
 	// Initialize LSH parameters
 	info.r = vector<vector<int>>(L, vector<int>(k)); // r's for each g 
 	info.h = vector<vector<int>>(L, vector<int>(k)); // selection of h_i for each g
+	info.delta = delta;
 	vector<Hash> hashes; // Hash functions
 	
 
@@ -58,7 +59,7 @@ struct LSH_Info LSH_Initialize(vector<Point *> points, int L, int k, int d,dista
 	}
 	
 	// Calculate L hashtables
-	info.hashtables = createHashtables(points,info.r,info.h,info.handler,info.tableSize,type);
+	info.hashtables = createHashtables(points,&info,type);
     
     return info;
 }
@@ -78,36 +79,7 @@ int N, float &average_duration, distance_type type){
 		Point q = **queries;
 
 		// Calculate amplified hash for each hashtable
-		vector<int> gindices = hashQuery(&q,info.r,info.h,info.handler,info.tableSize);
-
-		// kNN
-		res.push_back(kNN(&q,info.hashtables,gindices,N,type));
-
-		auto knn_stop = chrono::high_resolution_clock::now();
-		auto knn_duration = chrono::duration_cast<chrono::milliseconds>(knn_stop - knn_start);
-		average_duration += knn_duration.count();
-	}
-	average_duration /= (float)querypoints.size();
-    
-    return res;
-}
-
-
-vector<vector<Point *>> LSH_Frechet_KNN( vector<Point *> querypoints, struct LSH_Info info, \
-int N, float &average_duration, distance_type type){
-
-    vector<vector<Point *>> res;
-	average_duration = 0;
-
-	// Run algorithm for every query
-	for(vector<Point *>::iterator queries = querypoints.begin(); queries != querypoints.end(); queries++){
-
-		auto knn_start = chrono::high_resolution_clock::now();
-
-		Point q = **queries;
-
-		// Calculate amplified hash for each hashtable
-		vector<int> gindices = hashQuery(&q,info.r,info.h,info.handler,info.tableSize);
+		vector<int> gindices = hashQuery(&q,info,type);
 
 		// kNN
 		res.push_back(kNN(&q,info.hashtables,gindices,N,type));
