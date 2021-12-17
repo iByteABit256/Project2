@@ -12,11 +12,9 @@
 
 using namespace std;
 
-vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector<int> gindices, int k, distance_type type){
-	vector<tuple<float,Point *>> nearestneighbors;
-	vector<tuple<float,Point *>>::iterator it;
 
-	vector<Point *> res;
+vector<tuple<float,Point *>> findNearestNeighbors(Point *q,vector<vector<vector<Point *>>> ghashtables, vector<int> gindices, int k, distance_type type, bool empty){
+	vector<tuple<float,Point *>> nearestneighbors;
 
 	int L = ghashtables.size();
 
@@ -34,7 +32,7 @@ vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector
 			if(type == FRECHET){
 				nearestneighbors.push_back(make_tuple(q->distance(*p,type),p));
 			}else{
-				if(q->LSH_ID[i] == p->LSH_ID[i]){
+				if(empty || q->LSH_ID[i] == p->LSH_ID[i]){
 					nearestneighbors.push_back(make_tuple(q->distance(*p,type),p));
 				}
 			}
@@ -44,6 +42,20 @@ vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector
 				break;
 			}
 		}
+	}
+
+	return nearestneighbors;
+}
+
+vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector<int> gindices, int k, distance_type type){
+	vector<tuple<float,Point *>> nearestneighbors;
+	vector<tuple<float,Point *>>::iterator it;
+
+	vector<Point *> res;
+
+	nearestneighbors = findNearestNeighbors(q,ghashtables,gindices,k,type,false);
+	if(nearestneighbors.empty()){ // Run again ignoring LSH IDs if no results given
+		nearestneighbors = findNearestNeighbors(q,ghashtables,gindices,k,type,true);
 	}
 
 	sort(nearestneighbors.begin(), nearestneighbors.end(), compareDist);
