@@ -95,7 +95,7 @@ double totalSilhouette(vector<Cluster *> clusters){
         }
     }
     
-    return (double)accumulate(sil.begin(), sil.end(), 0)/(double)sil.size();
+    return (double)accumulate(sil.begin(), sil.end(), 0.0)/(double)sil.size();
 }
 
 double clusterSilhouette(Cluster *cluster, vector<Cluster *> clusters){
@@ -116,5 +116,5 @@ double clusterSilhouette(Cluster *cluster, vector<Cluster *> clusters){
         sil.push_back((b-a)/max(a,b));
     }
     
-    return (double)accumulate(sil.begin(), sil.end(), 0)/(double)sil.size();
+    return (double)accumulate(sil.begin(), sil.end(), 0.0)/(double)sil.size();
 }

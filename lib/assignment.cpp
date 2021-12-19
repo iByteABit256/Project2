@@ -143,7 +143,7 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 	//Initial value of radius
 	radius=radius/2;
 
-	float unchangedballs=0;
+	int unchangedballs=0;
 
 	unordered_map<Point*, vector<int>> matchedclusters;
 	unordered_map<Point*, vector<int>>::iterator help;
@@ -154,13 +154,13 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 	vector<vector<Point *>> newpoints (clusters.size());
 
 
-	while(radius <= R &&  (unchangedballs/clusters.size() >= 0.8) && (matchedclusters.size()!=points.size()) ){
+	while(radius <= R &&  ((float)unchangedballs/clusters.size() >= 0.8) && (matchedclusters.size()!=points.size()) ){
 		matchedclusters.clear();
 
 		// Run algorithm for every centroid
 		for(int j=0;j<clusters.size();j++){
 
-			Cluster* q = clusters[i];
+			Cluster* q = clusters[j];
 
 			currentclustersizes[j] = q->points.size();
 
@@ -208,7 +208,7 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 
 		//Double radius for next iteration
 		radius*=2;
-
+		unchangedballs = 0;
 	}
 
 	Cluster* closestcluster;
@@ -290,7 +290,7 @@ void hypercubeassignment(vector<Point*> points,vector<Cluster*> &clusters,int M,
 	//Initial value of radius
 	radius=radius/2;
 
-	float unchangedballs=0;
+	int unchangedballs=0;
 
 	unordered_map<Point*, vector<int>> matchedclusters;
 	unordered_map<Point*, vector<int>>::iterator help;
@@ -300,7 +300,7 @@ void hypercubeassignment(vector<Point*> points,vector<Cluster*> &clusters,int M,
 	vector<long unsigned int> currentclustersizes(clusters.size());
 	vector<vector<Point *>> newpoints (clusters.size());
 
-	while(radius <= R &&  (unchangedballs/clusters.size() >= 0.8) && (matchedclusters.size()!=points.size()) ){
+	while(radius <= R &&  ((float)unchangedballs/clusters.size() >= 0.8) && (matchedclusters.size()!=points.size()) ){
 		matchedclusters.clear();
 
 		// Run algorithm for every centroid
@@ -354,7 +354,7 @@ void hypercubeassignment(vector<Point*> points,vector<Cluster*> &clusters,int M,
 
 		//Double radius for next iteration
 		radius*=2;
-
+		unchangedballs = 0;
 	}
 
 	Cluster* closestcluster;

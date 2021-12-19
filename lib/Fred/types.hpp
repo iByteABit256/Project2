@@ -37,5 +37,3 @@ template<typename T, std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
 inline bool near_eq(T x, T y) {
   return std::abs(x - y) <= std::min(std::abs(x), std::abs(y)) * std::numeric_limits<T>::epsilon();
 }
-
-
