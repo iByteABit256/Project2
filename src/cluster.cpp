@@ -145,7 +145,7 @@ int main(int argc, char *argv[]){
 	   	dist = 0;
 	   	for(int i = 0; i < clusters.size(); i++){
 			// cerr << "Cluster " << i << " size: " << clusters[i]->points.size() << endl;
-	   		dist += clusters[i]->update();
+	   		dist += clusters[i]->update(update_method);
 	   	}
 
 		// Stop if clusters changed very little

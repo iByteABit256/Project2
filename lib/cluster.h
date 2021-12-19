@@ -6,13 +6,16 @@
 #include "point.h"
 
 class Cluster{
+private:
+    float meanVector();
+    float meanFrechet();
 public:
     vector<Point *> points;
     Point *centroid;
     
     Cluster(Point *centroid);
     void addPoint(Point *p);
-    float update();
+    float update(string update_method);
 };
 
 struct Config{
