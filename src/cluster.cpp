@@ -22,65 +22,18 @@
 #include "../lib/cluster.h"
 #include "../lib/kmeans.h"
 #include "../lib/assignment.h"
+#include "../lib/output.h"
+#include "../lib/input.h"
 
 using namespace std;
 
 const int MIN_DIFF = 200;
 
 int main(int argc, char *argv[]){
-	int n;
-	int d;
-	string inputfile, outputfile, configurationfile;
-	string assignment_method, update_method;
-	bool complete = false, silhouettes_enabled = false;
 
-	int opt;
+	struct clusterInfo cInfo = getClusterInfo(argc, argv);
 
-	while ((opt = getopt(argc, argv, "i:c:o:Csa:u:")) != -1) {
-        switch (opt) {
-		// Input file
-        case 'i':
-            inputfile = optarg;
-            break;
-		// Output file
-        case 'o':
-            outputfile = optarg;
-            break;
-		// Config file
-		case 'c':
-			configurationfile = optarg;
-			break;
-		// Complete flag
-		case 'C':
-			complete = true;
-			break;
-		// Silhouette flag
-		case 's':
-			silhouettes_enabled = true;
-			break;
-		// Assignment Method
-		case 'a':
-			assignment_method = optarg;
-			if(assignment_method != "Classic" && assignment_method != "LSH" && assignment_method != "Hypercube"){
-				cerr << "Invalid assignment_method passed" << endl;
-				exit(EXIT_FAILURE);
-			}
-			break;
-		// Update assignment_method
-		case 'u':
-			update_method = optarg;
-			if(update_method != "Mean Frechet" && update_method != "Mean Vector"){
-				cerr << "Invalid assignment_method passed" << endl;
-				exit(EXIT_FAILURE);
-			}
-			break;
-        default:
-        	cerr << "Wrong parameters passed" << endl;
-            exit(EXIT_FAILURE);
-        }
-    }
-
-	if(assignment_method == "Hypercube" && update_method == "Mean Frechet"){
+	if(cInfo.assignment_method == "Hypercube" && cInfo.update_method == "Mean Frechet"){
 		cerr << "Error: Can't use Frechet update method with Hypercube assignment method" << endl;
 		return 1;
 	}
@@ -88,13 +41,13 @@ int main(int argc, char *argv[]){
 	vector<Point *> points;
 
 	// Parse input file
-    points = parseinputfile(inputfile,d,n);
+    points = parseinputfile(cInfo.inputfile,cInfo.d,cInfo.n);
     if(points.empty()){
     	cerr << "Input file had an error, closing program" << endl;
 		return 1;
     }
 
-    struct Config config = parseConfig(configurationfile);
+    struct Config config = parseConfig(cInfo.configurationfile);
 
 	srand(time(NULL));
 
@@ -104,7 +57,7 @@ int main(int argc, char *argv[]){
 
 	// Initialization metric
 
-	if(complete){
+	if(cInfo.complete){
 		vector<double> shortest_distances;
 		for(vector<Cluster *>::iterator c1 = clusters.begin(); c1 != clusters.end(); c1++){
 			double min_dist = numeric_limits<double>::max();
@@ -139,13 +92,13 @@ int main(int argc, char *argv[]){
 
    	while(1){
 		// Assign points to current clusters
-	   	assignment(points,clusters,assignment_method,config,update_method);
+	   	assignment(points,clusters,cInfo.assignment_method,config,cInfo.update_method);
 
 		// Update all clusters
 	   	dist = 0;
 	   	for(int i = 0; i < clusters.size(); i++){
 			// cerr << "Cluster " << i << " size: " << clusters[i]->points.size() << endl;
-	   		dist += clusters[i]->update(update_method);
+	   		dist += clusters[i]->update(cInfo.update_method);
 	   	}
 
 		// Stop if clusters changed very little
@@ -162,7 +115,7 @@ int main(int argc, char *argv[]){
 	auto duration = chrono::duration_cast<chrono::milliseconds>(stop-start);
 	
 	vector<double> silhouette;
-	if(silhouettes_enabled){
+	if(cInfo.silhouettes_enabled){
 		for(int i = 0; i < clusters.size(); i++){
 			double cs = clusterSilhouette(clusters[i], clusters);
 			silhouette.push_back(cs);
@@ -171,53 +124,9 @@ int main(int argc, char *argv[]){
 		silhouette.push_back(totalSilhouette(clusters));
 	}
 
-	ostringstream ss; // Intermediary output buffer
-
 	// Output
 
-	ss << "Algorithm: " << assignment_method << endl;	
-	
-	for(int i = 0; i < clusters.size(); i++){
-		ss << "CLUSTER-" << i+1 << " {size: " << clusters[i]->points.size();
-		ss << ", centroid: " << clusters[i]->centroid->to_str() << "}" << endl;
-	}
-	
-	ss << "clustering_time: " << duration.count() << " ms" << endl;	
-	
-	if(silhouettes_enabled){
-		ss << "Silhouette: [";
-		for(int i = 0; i < silhouette.size(); i++){
-			ss << silhouette[i];	
-			if(i+1 != silhouette.size()){
-				ss << ",";
-			}
-		}
-		ss << "]" << endl;
-	}
-	
-	if(complete){
-		for(int i = 0; i < clusters.size(); i++){
-			ss << "CLUSTER-" << i+1 << " {" << clusters[i]->centroid->ID << ",";
-			vector<Point *> points = clusters[i]->points;
-			for(int j = 0; j < points.size(); j++){
-				ss << points[j]->ID;	
-				if(j+1 != points.size()){
-					ss << ",";
-				}
-			}
-			ss << "}" << endl;
-		}
-	}
-
-	ofstream output;
-	output.open(outputfile);
-
-	if(output.is_open()){
-		output << ss.str();
-		output.close();
-	}else{
-		cout << ss.str();
-	}
+	clusterOutput(cInfo.assignment_method, clusters, duration, silhouette, cInfo.silhouettes_enabled, cInfo.complete, cInfo.outputfile);
 	
 	// Cleanup
 

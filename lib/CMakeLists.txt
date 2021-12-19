@@ -4,6 +4,7 @@ add_library(
     kmeans.cpp LSHimpl.cpp maths.cpp 
     parser.cpp point.cpp LSH.cpp
     Hypercube.cpp Brute.cpp
+    output.cpp input.cpp
 )
 
 add_executable(LSH_unittest LSH_unittest.cpp)

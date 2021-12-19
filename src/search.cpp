@@ -11,6 +11,8 @@
 #include "../lib/Hypercube.h"
 #include "../lib/Brute.h"
 #include "../lib/parser.h"
+#include "../lib/output.h"
+#include "../lib/input.h"
 
 using namespace std;
 
@@ -19,101 +21,31 @@ int w = 200;
 
 int main(int argc, char *argv[]){
 
-	string inputfile;
-	string outputfile;
-	string queryfile;
-    string algorithm;
-    string metric;
+    struct searchInfo sInfo = getSearchInfo(argc, argv);
 
-	int M = 10, probes = 2, L = 5, d = 0, n, k = 4;
-    double delta = 0.69;
-    bool continuous;
-	
 	vector<Point *> querypoints;
 	vector<Point *>::iterator queries;
 	vector<Point *> points;
 	vector<Point *> brute;
-
-	// Command line parameters
-	int opt;
-
-	while ((opt = getopt(argc, argv, "i:q:k:L:R:o:M:p:a:m:d:")) != -1) {
-        switch (opt) {
-        //Input File
-        case 'i':
-            inputfile = optarg;
-            break;
-        // Query File
-        case 'q':
-            queryfile = optarg;
-            break;
-        // hash functions
-        case 'k':
-            k = atoi(optarg);
-            break;
-        // g functions
-        case 'L':
-            L = atoi(optarg);
-            break;
-        // Output File
-        case 'o':
-            outputfile = optarg;
-            break;
-        // Limit for hypercube
-        case 'M':
-            M = atoi(optarg);
-            break;
-        // Number of probes
-        case 'p':
-            probes = atoi(optarg);
-            break;
-        // Algorithm
-        case 'a':
-            algorithm = optarg;
-            if(algorithm != "LSH" && algorithm != "Hypercube" && algorithm != "Frechet"){
-                cerr << "No algorithm '" << algorithm << "', exiting program." << endl;
-                return 1;
-            }
-            break;
-        // Metric for Frechet
-        case 'm':
-            if(optarg == "discrete"){
-                continuous = false;
-            }else if(optarg == "continuous"){
-                continuous = true;
-            }else{
-                cerr << "No metric '" << optarg << "', exiting program." << endl;
-                return 1;
-            }
-            break;
-        // Delta
-        case 'd':
-            delta = atoi(optarg);
-            break;
-        default:
-        	cerr << "Wrong parameters passed" << endl;
-            exit(EXIT_FAILURE);
-        }
-    }
     
-    if(algorithm.empty()){
+    if(sInfo.algorithm.empty()){
         cerr << "No algorithm specified." << endl;
         return 1;
     }
 
 	// Parse input file
-    points = parseinputfile(inputfile,d,n);
+    points = parseinputfile(sInfo.inputfile,sInfo.d,sInfo.n);
     if(points.empty()){
     	cerr << "Input file had an error, closing program" << endl;
 		return 1;
     }
 	
 	// Set window to max(n/5,w) so that it scales with input
-	w = max(n/5,w);
+	w = max(sInfo.n/5,w);
 
 	// Parse query file
 	int d_temp, n_temp;
-	querypoints = parseinputfile(queryfile, d_temp, n_temp);
+	querypoints = parseinputfile(sInfo.queryfile, d_temp, n_temp);
     if(querypoints.empty()){
     	cerr << "Query file had an error, closing program" << endl;
 		return 1;
@@ -125,14 +57,14 @@ int main(int argc, char *argv[]){
 
     srand(time(NULL));
 
-    if(algorithm == "LSH"){
-        struct LSH_Info info = LSH_Initialize(points, L, k, d);
+    if(sInfo.algorithm == "LSH"){
+        struct LSH_Info info = LSH_Initialize(points, sInfo.L, sInfo.k, sInfo.d);
         res = LSH_KNN(points, querypoints, info, 1, average_duration, EUCLIDEAN);
-    }else if(algorithm == "Hypercube"){
-        struct Hypercube_Info info = Hypercube_Initialize(points, k, d, probes, M);
+    }else if(sInfo.algorithm == "Hypercube"){
+        struct Hypercube_Info info = Hypercube_Initialize(points, sInfo.k, sInfo.d, sInfo.probes, sInfo.M);
         res = Hypercube_KNN(points, querypoints, info, 1, average_duration, EUCLIDEAN);
-    }else if(algorithm == "Frechet"){
-        struct LSH_Info info = LSH_Initialize(points, L, k, 2*d, FRECHET, delta);
+    }else if(sInfo.algorithm == "Frechet"){
+        struct LSH_Info info = LSH_Initialize(points, sInfo.L, sInfo.k, 2*sInfo.d, FRECHET, sInfo.delta);
         res = LSH_KNN(points, querypoints, info, 1, average_duration, FRECHET);
         dist = FRECHET;
     }
@@ -140,40 +72,9 @@ int main(int argc, char *argv[]){
     float brute_average_duration;
     vector<vector<Point *>> true_res = Brute_KNN(points, querypoints, 1, brute_average_duration, dist);
     
-	ostringstream ss; // Intermediary output buffer
-    float maf = -1; // Maximum approximation factor
+    // Output
 
-    for(int i = 0; i < res.size(); i++){
-		// Output
-        float approx_dist = querypoints[i]->distance(*res[i][0], dist);
-        float true_dist = querypoints[i]->distance(*true_res[i][0], dist);
-        float approx_factor = approx_dist/(true_dist + numeric_limits<float>::min());
-        
-        if(approx_factor > maf){
-            maf = approx_factor;
-        }
-
-		ss << "Query: " << querypoints[i]->ID << endl; 
-        ss << "Algorithm: " << algorithm << endl;
-        ss << "Approximate Nearest neighbor: " << res[i][0]->ID << endl;
-        ss << "True Nearest neighbor: " << true_res[i][0]->ID << endl;
-        ss << "distanceApproximate: " << approx_dist << endl;
-        ss << "distanceTrue: " << true_dist << endl;
-    }
-    ss << endl;
-    ss << "tApproximateAverage: " << average_duration << " ms" << endl;
-    ss << "tTrueAverage: " << brute_average_duration << " ms" << endl;
-    ss << "MAF: " << maf << endl;
-
-	ofstream output;
-	output.open(outputfile);
-
-	if(output.is_open()){
-		output << ss.str();
-		output.close();
-	}else{
-		cout << ss.str();
-	}
+    searchOutput(res, true_res, querypoints, sInfo.algorithm, average_duration, brute_average_duration, sInfo.outputfile, dist);
 	
 	// Cleanup
 
