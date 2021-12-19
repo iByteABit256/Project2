@@ -11,6 +11,7 @@
 #include <sstream>
 #include <algorithm>
 
+#include "Hypercube.h"
 #include "LSH.h"
 #include "LSHimpl.h"
 #include "HyperImpl.h"
@@ -31,20 +32,24 @@ const int R = 1500;
 int w = 200;
 
 // Wrapper function for different methods
-void assignment(vector<Point *> points, vector<Cluster *> &clusters, string method, struct Config config){
-	if(method == "Classic"){
-		classicassignment(points,clusters);
-	}else if(method == "LSH"){
-		lshassignment(points,clusters,config.number_of_vector_hash_tables,config.number_of_vector_hash_functions);
-	}else if(method == "Hypercube"){
-		hypercubeassignment(points,clusters,config.max_number_M_hypercube,config.number_of_hypercube_dimensions,config.number_of_probes);
+void assignment(vector<Point *> points, vector<Cluster *> &clusters, string assignment_method, struct Config config, string update_method){
+	distance_type type = EUCLIDEAN;
+	if(update_method == "Mean Curve"){
+		type = FRECHET;
+	}
+	if(assignment_method == "Classic"){
+		classicassignment(points,clusters,type);
+	}else if(assignment_method == "LSH"){
+		lshassignment(points,clusters,config.number_of_vector_hash_tables,config.number_of_vector_hash_functions,type);
+	}else if(assignment_method == "Hypercube"){
+		hypercubeassignment(points,clusters,config.max_number_M_hypercube,config.number_of_hypercube_dimensions,config.number_of_probes,type);
 	}else{
-		cerr << "Invalid method given!" << endl;
+		cerr << "Invalid assignment_method given!" << endl;
 	}
 }
 
 // Lloyd's assignment
-void classicassignment(vector<Point*> points,vector<Cluster*> &clusters){
+void classicassignment(vector<Point*> points,vector<Cluster*> &clusters, distance_type type){
 	int n = points.size();
 	float dist;
 	Cluster *closestcluster;
@@ -52,7 +57,7 @@ void classicassignment(vector<Point*> points,vector<Cluster*> &clusters){
 	for(int i = 0; i < n; i++){
 		float min = numeric_limits<float>::max();
 		for(int j = 0; j < clusters.size(); j++){
-			if((dist = points[i]->distance(*(clusters[j]->centroid), EUCLIDEAN)) < min){
+			if((dist = points[i]->distance(*(clusters[j]->centroid), type)) < min){
 				min = dist;
 				closestcluster = clusters[j];
 			}
@@ -62,66 +67,13 @@ void classicassignment(vector<Point*> points,vector<Cluster*> &clusters){
 }
 
 // Reverse assignment with LSH
-void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L){
+void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L, distance_type type){
 
-
-	// Initialize LSH parameters
-	vector<vector<int>> r(L, vector<int>(k)); // r's for each g 
-	vector<vector<int>> h(L, vector<int>(k)); // selection of h_i for each g
-	vector<Hash> hashes; // Hash functions
 	int d = points[0]->d;
-	int n = points.size();
-	
-	// Set window to max(n/5,w) so that it scales with input
-	w = max(n/5,w);
-
-	// Generator with time seed 
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    default_random_engine generator(seed);
-	srand(seed);
-
-    normal_distribution<float> normal(0.0,1.0);
-    uniform_real_distribution<float> uniform(0.0,(float)w);
-	uniform_int_distribution<int> uniform_int(INT_MIN, INT_MAX);
-
-    for(int i = 0; i < k; i++){
-		vector<float> v(d);
-		float t;
-
-	    // Initialize random vector
-	    for(int j = 0; j < d; j++){
-	        v[j] = normal(generator);
-	    }
-
-	    // t in [0, w)
-	    t = uniform(generator);
-		
-		// Insert new hash function
-		Hash h(v,t);
-		hashes.push_back(h);
-	}
-
-
-	HashHandler handler = HashHandler(hashes);
-
-	for(int i = 0; i < L; i++){
-		for(int j = 0; j < k; j++){
-			h[i][j] = rand()%k; // add random h to g_i
-			r[i][j] = uniform_int(generator); // random r in [MIN_INT, MAX_INT)
-		}
-	}
-	
-	int tableSize;
-
-	struct LSH_Info info;
-	info.r = r;
-	info.h = h;
-	info.handler = handler;
-	info.tableSize = tableSize;
+	struct LSH_Info info = LSH_Initialize(points, L, k, d);
 
 	// Calculate L hashtables
-	vector<vector<vector<Point *>>> hashtables = createHashtables(points,&info);
-
+	vector<vector<vector<Point *>>> hashtables = createHashtables(points,&info,type);
 
 	vector<Cluster*>::iterator cluster;
 
@@ -134,7 +86,7 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 	//Find min distance between centers
 	for(int i=0;i < clusters.size();i++){
 		for(int j=i+1;j < clusters.size();j++){
-			if((dist=(clusters[i]->centroid)->distance(*(clusters[i]->centroid))) <  radius ){
+			if((dist=(clusters[i]->centroid)->distance(*(clusters[i]->centroid), type)) <  radius ){
 				radius=dist;
 			}
 		}
@@ -151,7 +103,7 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 	vector<int> vect;
 
 	vector<long unsigned int> currentclustersizes(clusters.size());
-	vector<vector<Point *>> newpoints (clusters.size());
+	vector<vector<Point *>> newpoints(clusters.size());
 
 
 	while(radius <= R &&  ((float)unchangedballs/clusters.size() >= 0.8) && (matchedclusters.size()!=points.size()) ){
@@ -165,10 +117,10 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 			currentclustersizes[j] = q->points.size();
 
 			// Calculate amplified hash for each hashtable
-			vector<int> gindices = hashQuery(q->centroid,info);
+			vector<int> gindices = hashQuery(q->centroid,info,type);
 
 			// Range Search
-			vector<Point *> neighborsinrange = rangeSearch(q->centroid,hashtables,gindices,radius);
+			vector<Point *> neighborsinrange = rangeSearch(q->centroid,hashtables,gindices,radius,type);
 
 			//Mark points
 			for(int i=0;i < neighborsinrange.size();i++){
@@ -188,7 +140,7 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 		 	if((it.second).size() > 1){
 				float min=numeric_limits<float>::max();
 				for(int i=0;i<(it.second).size();i++){
-					if( (dist = (it.first)->distance(*(clusters[(it.second)[i]]->centroid))) < min ){
+					if( (dist = (it.first)->distance(*(clusters[(it.second)[i]]->centroid),type)) < min ){
 						min=dist;
 						minindex=i;
 					}
@@ -218,7 +170,7 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 		if((matchedclusters.find(points[i])) == matchedclusters.end()){
 			float min=numeric_limits<float>::max();
 			for(int j=0;j<clusters.size();j++){
-				if( (dist = points[i]->distance(*(clusters[j]->centroid))) < min ){
+				if( (dist = points[i]->distance(*(clusters[j]->centroid),type)) < min ){
 					min=dist;
 					closestcluster=clusters[j];
 				}
@@ -229,45 +181,18 @@ void lshassignment(vector<Point*> points,vector<Cluster*> &clusters,int k,int L)
 }
 
 // Reverse assignment with Hypercube
-void hypercubeassignment(vector<Point*> points,vector<Cluster*> &clusters,int M,int k,int probes){
-	int d = points[0]->d;
-	int n = points.size();
-	
-	// Set window to max(n/5,w) so that it scales with input
-	w = max(n/5,w);
-	
-	// Initialize Hypercube parameters
-	vector<unordered_map<int, char>> f(k); // f values for each output of each h_i
-	vector<Hash> hashes;
+void hypercubeassignment(vector<Point*> points,vector<Cluster*> &clusters,int M,int k,int probes, distance_type type){
 
-	// Generator with time seed 
-    uint32_t seed = std::chrono::system_clock::now().time_since_epoch().count();
-    default_random_engine generator(seed);
-	srand(seed);
-
-    normal_distribution<float> normal(0.0,1.0);
-    uniform_real_distribution<float> uniform(0.0,(float)w);
-
-    for(int i = 0; i < k; i++){
-		vector<float> v(d);
-		float t;
-
-	    // Initialize random vector
-	    for(int j = 0; j < d; j++){
-	    	v[j] = normal(generator);
-	    }
-
-	    // t in [0, w)
-	    t = uniform(generator);
-		
-		Hash h(v,t);
-		hashes.push_back(h);
+	if(type == FRECHET){
+		cerr << "Cannot use Frechet distance with Hypercube assignment" << endl;
+		return;
 	}
-	
-	HashHandler handler = HashHandler(hashes);
 
+	int d = points[0]->d;
+	struct Hypercube_Info info = Hypercube_Initialize(points, k, d, probes, M);
+	
 	// Calculate hashtable
-	vector<vector<Point *>> hashtable = createHashtable(points,f,handler);
+	vector<vector<Point *>> hashtable = createHashtable(points,info.f,info.handler);
 
 	unordered_map<uint32_t, vector<uint32_t>> neighbours;
 
@@ -281,7 +206,7 @@ void hypercubeassignment(vector<Point*> points,vector<Cluster*> &clusters,int M,
 	//Find min distance between centers
 	for(int i=0;i < clusters.size();i++){
 		for(int j=i+1;j < clusters.size();j++){
-			if((dist=(clusters[i]->centroid)->distance(*(clusters[i]->centroid))) < radius){
+			if((dist=(clusters[i]->centroid)->distance(*(clusters[i]->centroid),type)) < radius){
 				radius=dist;
 			}
 		}
@@ -311,10 +236,10 @@ void hypercubeassignment(vector<Point*> points,vector<Cluster*> &clusters,int M,
 			currentclustersizes[j] = q->points.size();
 
 			// Calculate hash
-			int ind = hashQuery(q->centroid,f,handler);
+			int ind = hashQuery(q->centroid,info.f,info.handler,type);
 
 			// Range Search
-			vector<Point *> neighborsinrange = hyperrangeSearch(q->centroid,ind,neighbours,hashtable,radius,probes,M);
+			vector<Point *> neighborsinrange = hyperrangeSearch(q->centroid,ind,neighbours,hashtable,radius,probes,M,type);
 
 			//Mark points
 			for(int i=0;i < neighborsinrange.size();i++){
@@ -334,7 +259,7 @@ void hypercubeassignment(vector<Point*> points,vector<Cluster*> &clusters,int M,
 		 	if((it.second).size() > 1){
 				float min=numeric_limits<float>::max();
 				for(int i=0;i<(it.second).size();i++){
-					if( (dist = (it.first)->distance(*(clusters[(it.second)[i]]->centroid))) < min ){
+					if( (dist = (it.first)->distance(*(clusters[(it.second)[i]]->centroid),type)) < min ){
 						min=dist;
 						minindex=i;
 					}
@@ -364,7 +289,7 @@ void hypercubeassignment(vector<Point*> points,vector<Cluster*> &clusters,int M,
 		if((matchedclusters.find(points[i])) == matchedclusters.end()){
 			float min=numeric_limits<float>::max();
 			for(int j=0;j<clusters.size();j++){
-				if( (dist = points[i]->distance(*(clusters[j]->centroid))) < min ){
+				if( (dist = points[i]->distance(*(clusters[j]->centroid),type)) < min ){
 					min=dist;
 					closestcluster=clusters[j];
 				}

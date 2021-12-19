@@ -68,7 +68,7 @@ vector<Point *> kNN(Point *q,vector<vector<vector<Point *>>> ghashtables, vector
 	return res;
 }
 
-vector<Point *> rangeSearch(Point *q, vector<vector<vector<Point *>>> ghashtables, vector<int> gindices, float R){
+vector<Point *> rangeSearch(Point *q, vector<vector<vector<Point *>>> ghashtables, vector<int> gindices, float R, distance_type type){
 	vector<Point *> neighborsinrange;
 
 	int L = ghashtables.size();
@@ -85,13 +85,15 @@ vector<Point *> rangeSearch(Point *q, vector<vector<vector<Point *>>> ghashtable
 
 			Point *p = ghashtable[g_i][j];
 
-			// Ignore if different LSH ID
-			if(q->LSH_ID[i] != p->LSH_ID[i]){
-				continue;
+			if(type != FRECHET){
+				// Ignore if different LSH ID
+				if(q->LSH_ID[i] != p->LSH_ID[i]){
+					continue;
+				}
 			}
 
 			// Add if in range
-			if((dist=q->distance(*p)) < R){
+			if((dist=q->distance(*p,type)) < R){
 				neighborsinrange.push_back(p);
 			}
 

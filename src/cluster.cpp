@@ -80,6 +80,11 @@ int main(int argc, char *argv[]){
         }
     }
 
+	if(assignment_method == "Hypercube" && update_method == "Mean Frechet"){
+		cerr << "Error: Can't use Frechet update method with Hypercube assignment method" << endl;
+		return 1;
+	}
+
 	vector<Point *> points;
 
 	// Parse input file
@@ -125,6 +130,7 @@ int main(int argc, char *argv[]){
 		}
 		double average = accumulate(shortest_distances.begin(), shortest_distances.end(), 0)/(double)shortest_distances.size();
 		cerr << "Average centroid distance to closest centroid: " << average << endl;
+		cerr << endl;
 	}
 
     double dist;
@@ -133,7 +139,7 @@ int main(int argc, char *argv[]){
 
    	while(1){
 		// Assign points to current clusters
-	   	assignment(points,clusters,assignment_method,config);
+	   	assignment(points,clusters,assignment_method,config,update_method);
 
 		// Update all clusters
 	   	dist = 0;

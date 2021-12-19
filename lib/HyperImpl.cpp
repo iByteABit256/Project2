@@ -65,7 +65,7 @@ vector<Point*> hypercubekNN(Point* q, uint32_t qbitstring, unordered_map<uint32_
 	return res;
 }
 
-vector<Point*> hyperrangeSearch(Point* q, uint32_t qbitstring, unordered_map<uint32_t, vector<uint32_t>> &neighbours, vector<vector<Point*>> hashtable, float R, int probedist, int M){
+vector<Point*> hyperrangeSearch(Point* q, uint32_t qbitstring, unordered_map<uint32_t, vector<uint32_t>> &neighbours, vector<vector<Point*>> hashtable, float R, int probedist, int M, distance_type type){
 	unordered_map<uint32_t, vector<uint32_t>>::iterator help;
 	vector<Point *> neighborsinrange;
 
@@ -91,7 +91,7 @@ vector<Point*> hyperrangeSearch(Point* q, uint32_t qbitstring, unordered_map<uin
 		vector<Point*> points = hashtable[(*neighbour)];
 		for(point=points.begin();point!=points.end();point++){
 			// Add if in range
-			if((dist=q->distance(**point)) < R){
+			if((dist=q->distance(**point,type)) < R){
 				neighborsinrange.push_back(*point);
 			}
 		}

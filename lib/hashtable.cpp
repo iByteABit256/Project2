@@ -144,7 +144,7 @@ vector<int> hashQuery(Point *q, struct LSH_Info info, distance_type type){
 }
 
 // Hash query for hypercube
-int hashQuery(Point *q, vector<unordered_map<int, char>> &f, HashHandler handler){
+int hashQuery(Point *q, vector<unordered_map<int, char>> &f, HashHandler handler, distance_type type){
     int d = q->d; // dimension of points
     int k = handler.hashes.size(); // # of h functions
     
