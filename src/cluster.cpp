@@ -50,37 +50,6 @@ int main(int argc, char *argv[]){
 
     vector<Cluster *> clusters = initializeClusters(points, config.number_of_clusters); 
 
-	// Initialization metric
-
-	if(cInfo.complete){
-		vector<double> shortest_distances;
-		for(vector<Cluster *>::iterator c1 = clusters.begin(); c1 != clusters.end(); c1++){
-			double min_dist = numeric_limits<double>::max();
-			Point *centroid1 = (*c1)->centroid;
-
-			for(vector<Cluster *>::iterator c2 = clusters.begin(); c2 != clusters.end(); c2++){
-				if(c1 == c2){
-					continue;
-				}	
-
-				Point *centroid2 = (*c2)->centroid;
-				double dist = centroid1->distance(*centroid2);
-				if(dist < min_dist){
-					min_dist = dist;
-				}
-			}
-
-			shortest_distances.push_back(min_dist);
-		}
-
-		for(vector<double>::iterator dist = shortest_distances.begin(); dist != shortest_distances.end(); dist++){
-			cerr << "Centroid " << dist-shortest_distances.begin() << " distance to closest centroid: " << *dist << endl;
-		}
-		double average = accumulate(shortest_distances.begin(), shortest_distances.end(), 0)/(double)shortest_distances.size();
-		cerr << "Average centroid distance to closest centroid: " << average << endl;
-		cerr << endl;
-	}
-
     double dist;
 
 	// Assignment loop
