@@ -78,6 +78,8 @@ struct searchInfo getSearchInfo(int argc, char *argv[]){
 
 struct clusterInfo getClusterInfo(int argc, char *argv[]){
     struct clusterInfo info;
+    info.assignment_method = "Classic";
+    info.update_method = "Mean Vector";
     info.complete = false, info.silhouettes_enabled = false;
 
 	int opt;
@@ -125,6 +127,21 @@ struct clusterInfo getClusterInfo(int argc, char *argv[]){
             exit(EXIT_FAILURE);
         }
     }
+
+	if(info.inputfile.empty()){
+		std::cerr << "Error: No input file specified" << std::endl;
+        exit(EXIT_FAILURE);
+	}
+
+	if(info.assignment_method == "Hypercube" && info.update_method == "Mean Frechet"){
+		std::cerr << "Error: Can't use Frechet update method with Hypercube assignment method" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	if(info.configurationfile.empty()){
+		std::cerr << "Error: No config file specified" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 
     return info;
 }

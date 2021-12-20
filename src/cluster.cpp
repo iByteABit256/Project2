@@ -33,11 +33,6 @@ int main(int argc, char *argv[]){
 
 	struct clusterInfo cInfo = getClusterInfo(argc, argv);
 
-	if(cInfo.assignment_method == "Hypercube" && cInfo.update_method == "Mean Frechet"){
-		cerr << "Error: Can't use Frechet update method with Hypercube assignment method" << endl;
-		return 1;
-	}
-
 	vector<Point *> points;
 
 	// Parse input file

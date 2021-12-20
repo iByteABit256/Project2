@@ -30,7 +30,7 @@ float Cluster::meanVector(){
         centroid[i] = sum/T;
     }
 
-    Point *newcentre= new Point(centroid);
+    Point *newcentre= new Point(centroid, "Centroid");
 
     float dist = newcentre->distance(*(this->centroid));
     

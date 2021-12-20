@@ -1,31 +1,28 @@
     Software development for algorithmic problems - Project 2
 -----------------------------------------------------------------
 
-8==========D
+                            Main Parts:
 
-This project consists of two main parts:
-
-1) Classification with KNN or Range Search
-2) Clustering
+                            1) Search
+                            2) Cluster
 
 
 
-Classification
+Search
 ---------------
 
-KNN and Range Search have been implemented with both the LSH
-and the Hypercube implementations, which both aim to improve
-the algorithm's efficiency for big data.
+Searches for nearest time curves with LSH, Hypercube, 
+Discrete Frechet and Continuous Frechet methods.
 
 
-Clustering
+Cluster
 -----------
 
-Clustering uses the K-Means++ algorithm for cluster initialization,
-it assigns the points to clusters using Lloyd's algorithm or
-LSH/Hypercube for reverse assignment, and updates the clusters
-based on the mean of the points assigned to them, until there
-is no significant change to the clusters.
+Constructs clusters of time curves with
+assignment by Frechet-LSH, Vector-LSH, Hypercube and Lloyd's,
+and updates using mean vector or mean curve.
+
+
 
 
 Project structure
@@ -34,126 +31,67 @@ Project structure
     Directories
    -------------
 
-   -> src: Driver programs for LSH, Hypercube and Clustering.
+   -> src: Driver programs for cluster and search.
    -> lib: Algorithm implementations, helper functions, etc.
-   -> include: Header files for every file in /lib.
+      -> cluster: Files unique to cluster
+      -> common: Files for common use
+      -> search: Files for search 
    -> test: Input/query files.
-   -> build: Location where object files are stored.
-   -> .: Executables, README, config files, Makefile.
+   -> build: Location where CMake project is built.
+   -> .: README, cluster config file.
    
 
-    assignment.cpp
-   ----------------
 
-    Assignment algorithms for Clustering.
-    
-
-    cluster.h/cluster.cpp
-   -----------------------
-
-    Defines the Cluster class and the 
-    Config struct for storing all the information
-    from the config file for Clustering.
-    
-
-    hash.h/hash.cpp
-   -----------------
-   
-    Defines the Hash class and the Hash Handler
-    class, which is used to handle the multiple
-    hash functions used in LSH.
-    
-
-    hashtable.cpp
-   ---------------
-   
-    Implementations for all the hashtable related
-    functions for LSH and Hypercube.
-    
-
-    HyperImpl.cpp
-   ---------------
-   
-    Implementation of KNN and Range Search algorithms
-    for Hypercube.
-        
-
-    kmeans.cpp
-   ------------
-   
-    K-Means++ spread-out implementation for
-    clustering initialization.
-    
-
-    LSHimpl.cpp
-   -------------
-
-    Implementation of KNN and Range Search algorithms
-    for LSH. 
-       
-
-    maths.cpp
-   -----------
-
-    Helper math functions implementation.
-
-    
-    parser.cpp
-   ------------
-   
-    Parser for input/query files and config file.
-   
-
-    point.h/point.cpp
-   -------------------
-  
-    Defines the Point class.
-    
-
-    Clustering.cpp
-   ----------------
-
-    Clustering driver.
-    
-
-    hypercube.cpp
-   ---------------
-   
-    Hypercube driver.
-    
-    
-    LSH.cpp
-   ---------
-    
-    LSH driver.
-    
-
-    cluster.conf
-   --------------
-   
-    Default config file for Clustering.
 
 
 Instructions
 -------------
 
--> 'make [lsh|cube|cluster]' for LSH, Hypercube and Clustering accordingly.
+Build project
+-> cmake -S . -B build/
 
--> 'make clean' to delete object files and executables.
+Make executables with CMake
+-> cmake --build build/ (--target search|cluster|all|clean|[unit_test])
 
--> './lsh  –i  <input  file>  –q  <query  file>  –k  <int>  -L  <int>  -ο  <output  file>  -Ν 
-    <number of nearest> -R <radius>' to run LSH
+Make executables with Makefiles
+-> cd build
+-> make (search|cluster|all|clean|[unit_test])
 
--> './cube  –i  <input  file>  –q  <query  file>  –k  <int>  -M  <int>  -p  <int>  -ο 
-    <output file> -Ν <number of nearest> -R <radius>' to run Hypercube
 
-    (The p flag is for probes.)
+Run Search
+-> ./search –i <input file> –q <query file> –k <int> -L <int> -M <int> -probes
+    <int> -ο <output file> -a <LSH or Hypercube or Frechet> 
+    -m <discrete or continuous | only for –algorithm Frechet> -d <double>
 
--> './cluster  –i  <input  file>  –c  <configuration  file>  -o  <output  file>  -C 
-    <optional> -m <method: Classic OR LSH or Hypercube>' to run Clustering
 
-    (The C flag is for complete.)
-    
+Run Cluster
+-> ./cluster –i <input file> –c <configuration file> -o <output file> 
+    -u <Mean Frechet or Mean Vector> –a <Classic or LSH or Hypercube or LSH_Frechet>
+    -C <optional> -s <optional>
+
+
+Unit tests
+-----------
+
+Each of the following test suites has 2 test cases.
+
+LSH_unittest, Frechet_unittest, Hypercube_unittest, Brute_unittest.
+
+
+
+
+Implementation details
+-----------------------
+
+Time curve snapping
+--------------------
+
+Time curves are snapped to grid before being hashed.
+Then the curves are stored in their vector form in the hashtable.
+
+Each one of the L grids is used to snap the curve for
+the corresponding LSH hashtable.
+
 
 
 
