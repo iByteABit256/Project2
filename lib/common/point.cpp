@@ -55,7 +55,7 @@ float frechete_discrete(Point a, Point b){
             float a_x = (float)(i+1);
             float a_y = a.pos[i];
             float b_x = (float)(j+1);
-            float b_y = a.pos[j];
+            float b_y = b.pos[j];
             float dx = a_x - a_y;
             float dy = b_x - b_y;
 
