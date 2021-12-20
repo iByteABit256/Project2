@@ -75,7 +75,8 @@ Unit tests
 
 Each of the following test suites has 2 test cases.
 
-LSH_unittest, Frechet_unittest, Hypercube_unittest, Brute_unittest.
+Distance_unittest, LSH_unittest, Frechet_unittest,
+Hypercube_unittest, Brute_unittest.
 
 
 
