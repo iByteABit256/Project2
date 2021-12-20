@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <stdint.h>
 
-#include "point.h"
+#include "../common/point.h"
 
 using namespace std;
 

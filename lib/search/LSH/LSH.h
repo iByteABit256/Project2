@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "point.h"
-#include "hash.h"
+#include "../../common/point.h"
+#include "../hash.h"
 
 
 struct LSH_Info{

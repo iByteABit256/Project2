@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "cluster.h"
-#include "point.h"
+#include "../common/point.h"
 
 void assignment(vector<Point *> points, vector<Cluster *> &clusters, string assignment_method, struct Config config, string update_method);
 void classicassignment(vector<Point*> points,vector<Cluster*> &clusters, distance_type type);

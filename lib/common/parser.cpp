@@ -3,7 +3,7 @@
 #include <fstream>
 
 #include "parser.h"
-#include "cluster.h"
+#include "../cluster/cluster.h"
 
 using namespace std;
 

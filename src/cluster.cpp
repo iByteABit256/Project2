@@ -12,18 +12,18 @@
 #include <unordered_map>
 #include <stdint.h>
 
-#include "../lib/LSHimpl.h"
-#include "../lib/parser.h"
-#include "../lib/hash.h"
-#include "../lib/point.h"
-#include "../lib/hashtable.h"
-#include "../lib/maths.h"
-#include "../lib/HyperImpl.h"
-#include "../lib/cluster.h"
-#include "../lib/kmeans.h"
-#include "../lib/assignment.h"
-#include "../lib/output.h"
-#include "../lib/input.h"
+#include "../lib/search/LSH/LSHimpl.h"
+#include "../lib/search/hash.h"
+#include "../lib/search/hashtable.h"
+#include "../lib/search/Hypercube/HyperImpl.h"
+#include "../lib/cluster/cluster.h"
+#include "../lib/cluster/kmeans.h"
+#include "../lib/cluster/assignment.h"
+#include "../lib/common/maths.h"
+#include "../lib/common/parser.h"
+#include "../lib/common/point.h"
+#include "../lib/common/output.h"
+#include "../lib/common/input.h"
 
 using namespace std;
 

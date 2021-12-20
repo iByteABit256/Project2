@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "point.h"
+#include "../common/point.h"
 
 class Cluster{
 private:

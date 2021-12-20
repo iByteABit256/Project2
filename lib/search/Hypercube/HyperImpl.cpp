@@ -8,10 +8,10 @@
 #include <unordered_map>
 #include <stdint.h>
 
-#include "hash.h"
-#include "hashtable.h"
-#include "point.h"
-#include "maths.h"
+#include "../hash.h"
+#include "../hashtable.h"
+#include "../../common/point.h"
+#include "../../common/maths.h"
 
 using namespace std;
 

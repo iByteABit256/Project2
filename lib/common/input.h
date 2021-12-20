@@ -1,3 +1,6 @@
+#ifndef INPUT
+#define INPUT
+
 #include <string>
 
 struct searchInfo{
@@ -15,3 +18,5 @@ struct clusterInfo{
 
 struct searchInfo getSearchInfo(int argc, char *argv[]);
 struct clusterInfo getClusterInfo(int argc, char *argv[]);
+
+#endif

@@ -7,7 +7,7 @@
 #include <chrono>
 
 #include "point.h"
-#include "cluster.h"
+#include "../cluster/cluster.h"
 
 void searchOutput(vector<vector<Point *>> res, vector<vector<Point *>> true_res, vector<Point *> querypoints, \
 string algorithm, float average_duration, float brute_average_duration, string outputfile, distance_type dist){

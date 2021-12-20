@@ -5,7 +5,8 @@
 #include <climits>
 
 #include "hash.h"
-#include "maths.h"
+#include "../common/maths.h"
+#include "../common/global.h"
 
 using namespace std;
 

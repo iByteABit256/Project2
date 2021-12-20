@@ -7,17 +7,16 @@
 #include <sstream>
 #include <limits>
 
-#include "../lib/LSH.h"
-#include "../lib/Hypercube.h"
-#include "../lib/Brute.h"
-#include "../lib/parser.h"
-#include "../lib/output.h"
-#include "../lib/input.h"
+#include "../lib/search/LSH/LSH.h"
+#include "../lib/search/Hypercube/Hypercube.h"
+#include "../lib/search/Brute/Brute.h"
+#include "../lib/common/parser.h"
+#include "../lib/common/output.h"
+#include "../lib/common/input.h"
+#include "../lib/common/global.h"
 
 using namespace std;
 
-// Hash function window
-int w = 200;
 
 int main(int argc, char *argv[]){
 

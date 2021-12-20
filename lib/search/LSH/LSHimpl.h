@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "point.h"
+#include "../../common/point.h"
 
 vector<Point *> bruteKNN(Point *q, vector<Point *> points, int k, distance_type type = EUCLIDEAN);
 vector<Point *> kNN(Point *, vector<vector<vector<Point *>>>, vector<int>, int, distance_type type = EUCLIDEAN);

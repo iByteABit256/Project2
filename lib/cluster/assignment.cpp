@@ -11,15 +11,15 @@
 #include <sstream>
 #include <algorithm>
 
-#include "Hypercube.h"
-#include "LSH.h"
-#include "LSHimpl.h"
-#include "HyperImpl.h"
-#include "parser.h"
-#include "hash.h"
-#include "point.h"
-#include "hashtable.h"
-#include "maths.h"
+#include "../search/Hypercube/Hypercube.h"
+#include "../search/Hypercube/HyperImpl.h"
+#include "../search/LSH/LSH.h"
+#include "../search/LSH/LSHimpl.h"
+#include "../search/hash.h"
+#include "../search/hashtable.h"
+#include "../common/parser.h"
+#include "../common/point.h"
+#include "../common/maths.h"
 #include "cluster.h"
 #include "assignment.h"
 

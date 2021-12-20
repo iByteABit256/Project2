@@ -4,11 +4,11 @@
 #include <unordered_map>
 #include <random>
 
-#include "LSH.h"
+#include "LSH/LSH.h"
 #include "hashtable.h"
 #include "hash.h"
-#include "maths.h"
-#include "point.h"
+#include "../common/maths.h"
+#include "../common/point.h"
 
 const int bucketSizeFactor = 2; // Average bucket size
 

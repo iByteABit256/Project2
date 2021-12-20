@@ -5,7 +5,7 @@
 #include <tuple>
 
 #include "point.h"
-#include "cluster.h"
+#include "../cluster/cluster.h"
 
 float dot(std::vector<float> x, std::vector<float> y);
 int modulo(int , int );

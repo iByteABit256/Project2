@@ -1,7 +1,10 @@
+#ifndef HYPERCUBE_HEADER
+#define HYPERCUBE_HEADER
+
 #include <vector>
 
-#include "point.h"
-#include "hash.h"
+#include "../../common/point.h"
+#include "../hash.h"
 
 
 struct Hypercube_Info{
@@ -16,3 +19,4 @@ struct Hypercube_Info Hypercube_Initialize(vector<Point *> points, int k, int d,
 vector<vector<Point *>> Hypercube_KNN(vector<Point *> points, vector<Point *> querypoints, \
 struct Hypercube_Info info, int N, float &average_duration, distance_type type);
 
+#endif

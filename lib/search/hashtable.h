@@ -5,9 +5,9 @@
 #include <unordered_map>
 #include <stdint.h>
 
-#include "LSH.h"
+#include "LSH/LSH.h"
 #include "hash.h"
-#include "point.h"
+#include "../common/point.h"
 
 vector<vector<vector<Point *>>> createHashtables(vector<Point *> points, struct LSH_Info *info, distance_type type = EUCLIDEAN);
 vector<vector<Point *>> createHashtable(vector<Point *> points, vector<unordered_map<int, char>> &f, HashHandler handler);

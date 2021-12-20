@@ -6,9 +6,9 @@
 #include <tuple>
 #include <algorithm>
 
-#include "hash.h"
-#include "point.h"
-#include "maths.h"
+#include "../hash.h"
+#include "../../common/point.h"
+#include "../../common/maths.h"
 
 using namespace std;
 
