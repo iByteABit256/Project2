@@ -93,11 +93,3 @@ Then the curves are stored in their vector form in the hashtable.
 Each one of the L grids is used to snap the curve for
 the corresponding LSH hashtable.
 
-
-
-
-
-
-                                         Made by
-
-            - Μάριος Γκότζαϊ [sdi1800031]            - Παύλος Σμιθ [sdi1800181]
